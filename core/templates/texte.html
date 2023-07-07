@@ -1,0 +1,35 @@
+<ul class="navbar-nav mr-lg-2">
+    <li class="nav-item nav-search d-none d-lg-block">
+      <div class="search-pg">
+      <form class="search-container" action="{% url 'pesquisar-empresa' %}" method="get" id="search-icon">
+        <input type="search" name="search" id="search-bar" placeholder="Busca">
+        <button>
+        <img class="search-icon" src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png">
+      </button>
+      </form>
+    </div>
+    </li>
+  </ul>
+
+
+<ul class="navbar-nav navbar-nav-right">
+    <li class="nav-item nav-profile dropdown">
+      <div class="move">
+      <a style="float: right;" class="nav-link dropdown-toggle profile-ideal" href="#" data-toggle="dropdown" id="profileDropdown">
+        <img  src="{% static 'images/dashboard/faces/face5.png' %}" alt="profile"/>
+        <span class="nav-profile-name">{{request.session.usuario_nome}}</span>
+      </a>
+      
+      <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+        <a href="{% url 'editar-usuario' request.session.usuario %}" class="dropdown-item">
+          <i class="mdi mdi-settings text-primary"></i>
+          Configurações
+        </a>
+        <a class="dropdown-item" href="{% url 'logout' %}" >
+          <i class="mdi mdi-logout text-primary"></i>
+          Sair
+        </a>
+      </div>
+    </div>
+    </li>
+  </ul>

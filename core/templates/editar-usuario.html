@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load bootstrap4 %}
+
+
+
+
+<br>
+{% bootstrap_messages %}
+<br>
+
+<div class="content-wrapper ">
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+    <h1>Editar usuário</h1>
+    <form class="form" action="#" method="post" >
+        {% csrf_token %}
+        <div class="form_grupo">
+            <label for="nome" class="form_label">Nome</label>
+            <input type="text" name="nome" value="{{usuario.nome}}" class="form_input" id="nome" placeholder="Nome" autocomplete="off" minlength="3" maxlength="50" required data-error="Porfavor coloque um nome válido">
+        </div>
+        <div class="form_grupo">
+            <label for="e-mail" class="form_label">Email</label>
+            <input type="email" name="email" value="{{usuario.email}}" class="form_input" id="email" placeholder="seuemail@email.com" autocomplete="off" maxlength="50" required data-error="Insira um email válido.">
+        </div>
+        <div class="form_grupo">
+            <label for="senha" class="form_label">Nova senha</label>
+            <input type="password" name="senha" class="form_input" id="senha" placeholder="Senha" autocomplete="off" minlength="6" maxlength="100" data-error="insira a senha corretamente">
+        </div>
+        <div class="form_grupo">
+            <label for="senha" class="form_label">Confirmar senha</label>
+            <input type="password" name="confirmar_senha" class="form_input" id="confirmar_senha" placeholder="Confirmar senha" autocomplete="off" minlength="6" maxlength="100" data-error="insira a senha corretamente">
+        </div>
+        <div class="form_grupo">
+            <br>
+            <label for="permissao" class="text">Permissão</label>
+            {% if request.session.usuario_permissao ==  request.session.adm %}
+            <select name="permissao" class="dropdown" required id="permissao">
+                <option selected disabled class="form_select_option" value="">Selecione</option>
+                {% for perm in permissao %}
+                {% if usuario.permissao_login.id == perm.id %}
+                <option selected value="{{ perm.id }}" class="form_select_option">{{ perm.nome }}</option>
+                {% else %}
+                <option value="{{ perm.id }}" class="form_select_option">{{ perm.nome }}</option>
+                {% endif %}
+
+                {% endfor %}
+            </select>
+            {% else %}
+            <select name="permissao" class="dropdown" required id="permissao">
+                <option disabled class="form_select_option" value="">Selecione</option>
+                <option selected value="{{ usuario.permissao_login.id }}" class="form_select_option">{{ usuario.permissao_login }}</option>
+
+            </select>
+
+            {% endif %}
+        </div>
+        <br><br><br>
+            
+            <div class="submit">
+              <input type="hidden" name="acao" value="enviar">
+              <button type="submit" name="Submit" class="submit_btn" >Salvar</button>
+              <a href="{% url 'usuarios' %}"><h3>Voltar</h3></a>
+            
+            </div>
+    </form>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+{% include 'footer.html' %}
+
+{% endblock %}

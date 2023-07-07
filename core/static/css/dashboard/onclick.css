@@ -1,0 +1,18 @@
+.button-group{
+    box-shadow: none;
+}
+.button-group > a {
+    color: aqua;
+}
+
+.button-group a:active {
+    color: #27cc4d; /*Mudamos a cor para Verde*/
+  }
+
+.button-group a:visited {
+    color: #fa8900; /*Mudamos a cor para Laranja*/
+}
+
+.buttonClicked {
+    color: hsl(221, 100%, 22%);
+}

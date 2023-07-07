@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% block content %}
+
+
+
+<br>
+{% bootstrap_messages %}
+
+<br>
+<div class="tam" >
+    <div class="col-lg-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <br>
+          <div>
+            <h4 style="" class="card-title">EMPRESAS</h4>
+            <br>
+            <div class="filtrar" style="float: left;">
+            <h4 style="float: left;" class="card-title">Filtrar:</h4>
+            <h4 style="float: left; margin-left:3vw;" class="card-title">Sistema</h4>
+
+              <select name="unidade" id="unidade" class="dropdown" required onChange="AbrirSecao(this.value)">
+
+                  <option value="{% url 'listar-empresa' %}" class="form_select_option" value="">Todos</option>
+                  {% for sistema in sistemas %}
+                  {% if sistema.id == select %}
+                  <option selected value="?search={{sistema.id}}" class="form_select_option">{{sistema.nome}}</option>
+                  {% else %}
+                  <option value="?search={{sistema.id}}" class="form_select_option">{{sistema.nome}}</option>
+                  {% endif %}
+                  {% endfor %}
+              </select>
+            </div>
+            <br><br>
+          </div>
+          <br>
+          <div class="table-responsive">
+            {% if paginator != '' %}
+            <table class="table table-striped">
+              <thead>
+                
+                <tr>
+                  <th>
+                    RAZÂO SOCIAL
+                  </th>
+                  <th>
+                    CNPJ
+                  </th>
+                  <th>
+                    NOME FANTASIA
+                  </th>
+                  <th>
+                    SISTEMA
+                  </th>
+                  <th>
+                    SUPORTE
+                  </th>
+                  <th>
+                    COBRANÇA
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for emp  in empresas %}
+                <tr>
+                  <td class="py-1">
+                    {{emp.empresa.razao}}
+                  </td>
+                  <td>
+                    {{emp.empresa.cnpj}}
+                  </td>
+                  <td>
+                    {{emp.empresa.fantasia}}
+                  </td>
+                  <td>
+                    {{emp.sistema}}
+                  </td>
+                  <td>
+                    {{emp.suporte}}
+                  </td>
+                  <td>
+                    {{emp.contrato}}
+                  </td>
+                  {% if not request.session.usuario_permissao == request.session.user %}
+                  <td>
+                    <a href="{% url 'editar-empresa' emp.id %}"><i class="mdi mdi-pencil menu-icon"></i></a>
+                  </td>
+                  <td>
+                    <a name="itens" id="itens" class="delete" onclick='return pergunta();' href="{% url 'excluir-empresa' emp.id %}"><i class="mdi  mdi-delete menu-icon"></i></a>
+                  </td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <br><br>
+            <div class="pagination text-center center ">
+              <span class="step-links">
+                {% if empresas.has_previous %}
+                <a href="?page={{ empresas.previous_page_number }}">anterior</a>
+                {% endif %}
+                <span class="current">Página {{ empresas.number }} de {{ empresas.paginator.num_pages }}.</span>
+                {% if empresas.has_next %}
+                <a href="?page={{ empresas.next_page_number }}">próxima</a>
+                {% endif %}
+              </span>
+            </div>
+            {% else %}
+            <div class="notfind">
+              <h1>Não foram encontradas empresas cadastradas</h1>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% include 'footer.html' %}
+
+{% endblock %}

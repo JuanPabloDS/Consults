@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% load bootstrap4 %}
+
+
+<br>
+{% bootstrap_messages %}
+
+<br>
+
+<div class="tam margin_bottom">
+  <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+            <p class="card-title">Treinamentos finalizados</p>
+            <div class="table-responsive">
+              {% if paginator != '' %}
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>
+                        NOME
+                      </th>
+                      <th>
+                        RAZÂO SOCIAL
+                      </th>
+                      <th>
+                        CNPJ
+                      </th>
+                      <th>
+                        Sistema
+                      </th>
+                      <th>
+                        Data
+                      </th>
+                      <th>
+                        Horario
+                      </th>
+                      <th>
+                        Atendente
+                      </th>
+                      <th>
+                        Situação
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for treinamento in treinamentos %}
+                    <tr>
+                      <td class="py-1">
+                        {{treinamento.cliente}}
+                      </td>
+                      <td>
+                        {{treinamento.empresa}}
+                      </td>
+                      <td>
+                        {{treinamento.cnpj}}
+                      </td>
+                      <td>
+                        {{treinamento.sistema}}
+                      </td>
+                      <td>
+                        {{treinamento.data}}
+                      </td>
+                      <td>
+                        {{treinamento.horario}}
+                      </td>
+                      <td>
+                        {{treinamento.atendente}}
+                      </td>
+                      <td>
+                        {{treinamento.status}}
+                      </td>
+                      {% if not request.session.usuario_permissao == request.session.user %}
+                      <td>
+                        <a href="{% url 'editar-treinamento' treinamento.id %}"><i class="mdi mdi-pencil menu-icon"></i></a>
+                      </td>
+                      <td>
+                        <a name="itens" class="delete" id="itens" onclick='return pergunta();' href="{% url 'excluir-treinamento' treinamento.id  %}"><i class="mdi  mdi-delete menu-icon"></i></a>
+                      </td>
+                      {% endif %}
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                <br><br>
+                <div class="pagination text-center center ">
+                  <span class="step-links">
+                    {% if treinamentos.has_previous %}
+                    <a href="?page={{ treinamentos.previous_page_number }}">anterior</a>
+                    {% endif %}
+                    <span class="current">Página {{ treinamentos.number }} de {{ treinamentos.paginator.num_pages }}.</span>
+                    {% if treinamentos.has_next %}
+                    <a href="?page={{ treinamentos.next_page_number }}">próxima</a>
+                    {% endif %}
+                  </span>
+                </div>
+                {% else %}
+                <div class="notfind">
+                  <br><br>
+                  <h1>Não foram encontrados treinamentos cadastrados</h1>
+                </div>
+                {% endif %}
+              </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% include 'footer.html' %}
+
+{% endblock %}

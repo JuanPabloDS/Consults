@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load bootstrap4 %}
+
+
+
+<br>
+{% bootstrap_messages %}
+<br>
+<div class="tam">
+  <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Usuários</h4>
+            <div class="table-responsive">
+          <div class="table-responsive">
+            {% if paginator != '' %}
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>
+                    NOME
+                  </th>
+                  <th>
+                    Email
+                  </th>
+                  <th>
+                    Senha
+                  </th>
+                  <th>
+                    Permissão
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for use in usuarios %}
+                <tr>
+                  
+                  <td class="py-1">
+                    {{use.nome}}
+                  </td>
+                  <td>
+                    {{use.email}}
+                  </td>
+                  <td>
+                    ************
+                  </td>
+                  <td>
+                    {{use.permissao_login}}
+                  </td>
+                  <td>
+                    <a href="{% url 'editar-usuario' use.id %}"><i class="mdi mdi-pencil menu-icon"></i></a>
+                  </td>
+                  <td>
+                    <a href="{% url 'excluir-usuario' use.id %}" onclick='return pergunta();' class="delete"><i class="mdi  mdi-delete menu-icon"></i></a>
+                  </td>
+                  
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <br><br>
+            <div class="pagination text-center center ">
+              <span class="step-links">
+                {% if usuarios.has_previous %}
+                <a href="?page={{ usuarios.previous_page_number }}">anterior</a>
+                {% endif %}
+                <span class="current">Página {{ usuarios.number }} de {{ usuarios.paginator.num_pages }}.</span>
+                {% if usuarios.has_next %}
+                <a href="?page={{ usuarios.next_page_number }}">próxima</a>
+                {% endif %}
+              </span>
+            </div>
+            {% else %}
+            <div class="notfind">
+              <br><br>
+              <h1>Não foram encontradas usuarios cadastradas</h1>
+            </div>
+            {% endif %}
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% include 'footer.html' %}
+
+{% endblock %}

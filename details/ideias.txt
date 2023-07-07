@@ -1,0 +1,33 @@
+1- Tela de login
+ - Emal
+ - senha
+
+2- Consultar clientes
+ - tipos de consultas
+  - cnpj
+  - Razão social
+  - Empresa vinculada
+  - Nome fantasia
+  - ID da empresa
+ + novo cadastro
+ + marcar Cliente
+ + editar cliente
+ + Excluir cliente
+
+3 - Informações da empresa
+ - cnpj
+ - Razão social
+ - Empresa vinculada
+ - Nome fantasia
+ - ID da empresa
+ - Tipo de contrato anual/mensal/ antigo normal
+ - Tipo de sistema RHID/ PONTO 4 / PONTO OFF / Secullum WEB
+ - Quantidade de funcionarios
+ - Suporte tecnico sim/não
+ + Editar cadastro
+ + excluir registro
+
+
+ideal-administrativo
+
+juan@hotmail.com	pbkdf2_sha256$390000$EcL6pXLXmizwpehGrNWF5B$jYdDDw4DlmsOGp5x+wN6ZPmWghOO26YiMWVFr7i9iRo=

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load bootstrap4 %}
+
+
+<br>
+{% bootstrap_messages %}
+<br>
+<div class="content-wrapper ">
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+    <h1>CADASTRAR EMPRESA</h1>
+    <form class="form" style="min-height: 70vw" action="#" method="post">
+        {% csrf_token %}
+        <div class="form_grupo">
+            <label for="razao" class="form_label">Razão social</label>
+            <input type="text" name="razao" class="form_input" id="razao" placeholder="Razão social" required autocomplete="off" minlength="3" maxlength="150" required data-error="Porfavor coloque a Razão social">
+        </div>
+        
+        <div class="form_grupo">
+            <label for="cnpj" class="form_label cnpj">Cnpj</label>
+            <input type="text" name="cnpj" class="form_input" id="cnpj" placeholder="Cnpj" pattern="(\d{3}\.?\d{3}\.?\d{3}-?\d{2})|(\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2})" required autocomplete="off" minlength="3" maxlength="50" required data-error="Porfavor coloque um CNPJ válido">
+        </div>
+        <div class="form_grupo">
+            <label for="fantasia" class="form_label">Nome fantasia</label>
+            <input type="text" name="fantasia" class="form_input" id="fantasia" placeholder="Nome fantasia" autocomplete="off" minlength="3" maxlength="150">
+        </div>
+        <div class="form_grupo">
+            <label for="e-mail" class="form_label">Email</label>
+            <input type="email" name="email" class="form_input" id="email" placeholder="seuemail@email.com" required autocomplete="off" maxlength="50" required data-error="Insira um email válido.">
+        </div>
+        
+        <div class="form_grupo">
+            <label for="nome_adicional" class="form_label">Nome adicional (Não obrigatorio)</label>
+            <input type="text" name="nome_adicional" class="form_input" id="nome_adicional" placeholder="Nome adicional" autocomplete="off" maxlength="50">
+        </div>
+        <div class="form_grupo">
+                <label for="sistema" class="form_label">Sistema</label>
+                <table>
+                    {% for sis in sistemas %}
+                    <tr>
+                      <td class="choose-input"><input type="radio" id="sistema" name="sistema" value="{{ sis.id }}"></td>
+                      <td class="choose-td"><label for="sistema">{{sis.nome}}</label></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+        </div>
+        <div class="form_grupo">
+            <label for="funcionarios" class="text">Quantidade de funcionarios</label>
+            <br>
+            <input class="input-qtd" name="funcionarios" id="funcionarios" value="1" type="number"  min="1" max="500" placeholder="1"> 
+        </div>
+        <div class="form_grupo">
+            <br>
+            <label for="contrato" class="text">Contrato</label>
+            <select name="contrato" id="contrato" class="dropdown" required>
+                
+                <option selected disabled class="form_select_option" value="">Selecione</option>
+                <option value="Mensal" class="form_select_option">Mensal</option>
+                <option value="Anual" class="form_select_option">Anual</option>                  
+            </select>
+        </div>
+        <div class="form_grupo">
+            <br>
+            <label for="estadocivil" class="text">Suporte técnico</label>
+            <select name="suporte" id="suporte" class="dropdown" required>
+                
+                <option selected disabled class="form_select_option" value="">Selecione</option>
+                <option value="Sim" class="form_select_option">Sim</option>
+                <option value="Não" class="form_select_option">Não</option>                  
+            </select>
+        </div>
+        <div class="form_message">
+            <label for="observacao" class="form_message_label"> Observação (Não obrigatorio)</label>
+            <textarea name="observacao" class="form_input" id="observacao" placeholder="observacao"cols="30" rows="3" class="form_input message_input"></textarea>
+        </div>
+            <div class="submit">
+              <input type="hidden" name="acao" value="enviar">
+              <button type="submit" name="Submit" class="submit_btn" >Salvar</button>
+            
+            </div>
+    </form>
+    </div>
+    </div>
+</div>
+</div>
+</div><!--container_form-->
+
+
+{% include 'footer.html' %}
+
+{% endblock %}

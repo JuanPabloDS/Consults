@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% load bootstrap4 %}
+
+
+<br>
+{% bootstrap_messages %}
+<br>
+
+<div class="container_form margin_bottom">
+    <h1>Editar treinamento</h1>
+    <form class="form margin_bottom"  action="#" method="post">
+        {% csrf_token %} 
+        <div class="form_grupo">
+            <label for="empresa" class="form_label">Empresa</label>
+            <input type="text" value="{{treinamento.empresa}}" name="empresa" class="form_input" id="empresa" placeholder="Empresa" required autocomplete="off" minlength="3" maxlength="150" required data-error="Porfavor coloque o nome da empresa">
+        </div>
+        
+        <div class="form_grupo">
+            <label for="cnpj" class="form_label cnpj">Cnpj</label>
+            <input type="text" value="{{treinamento.cnpj}}" name="cnpj" class="form_input" id="cnpj" placeholder="Cnpj" pattern="(\d{3}\.?\d{3}\.?\d{3}-?\d{2})|(\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2})" required autocomplete="off" minlength="3" maxlength="50" required data-error="Porfavor coloque um CNPJ válido">
+        </div>
+        <div class="form_grupo">
+            <label for="cliente" class="form_label">Cliente</label>
+            <input type="cliente" value="{{treinamento.cliente}}" onclick="asd" name="cliente" class="form_input" id="cliente" placeholder="Cliente" required autocomplete="off" minlength="3" maxlength="150" required data-error="Porfavor coloque o nome do cliente corretamente">
+        </div>
+        <div class="form_grupo">
+            <label for="telefone" class="form_label">Telefone</label>
+            <input type="telefone" value="{{treinamento.telefone}}" name="telefone" class="form_input" id="telefone" placeholder="(xx) xxxx-xxxx" required >
+        </div>
+        <div class="form_grupo">
+            <label for="data" class="form_label">Data</label>
+            <br>
+            <input type="date" id="data" class="date" name="data"  value="{{treinamento.data}}"min="{{ data }}" >
+        </div>
+        <div class="form_grupo">
+            <label for="horario" class="form_label">Horario</label>
+            <br>
+            <input type="time" value="{{treinamento.horario}}" id="horario" class="date" name="horario" min="09:00" max="17:00" required>
+        </div>
+        <div class="form_grupo">
+            <label for="sistema" class="form_label">Sistema</label>
+            <table>
+                {% for sis in sistemas %}
+                    <tr>
+                        {% if sis.id == treinamento.sistema.id %}
+                      <td class="choose-input"><input checked type="radio" id="sistema" name="sistema" value="{{ sis.id }}"></td>
+                      <td class="choose-td"><label for="sistema">{{sis.nome}}</label></td>
+                        {% else %}
+                      <td class="choose-input"><input type="radio" id="sistema" name="sistema" value="{{ sis.id }}"></td>
+                      <td class="choose-td"><label for="sistema">{{sis.nome}}</label></td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+            </table>
+        </div>
+
+        {% if request.session.usuario_permissao == 'Administrador' %}
+        <div class="form_grupo">
+            <br>
+            <label for="atendente" class="form_label">Atendente</label>
+            <select name="atendente" id="atendente" class="dropdown" required>
+                <option selected disabled class="form_select_option" value="">Selecione</option>
+                {% for use in usuarios %}
+                {% if treinamento.atendente.id == use.id %}
+                <option selected value="{{ use.id }}" class="form_select_option">{{ use.nome }}</option>
+                {% else %}
+                <option value="{{ use.id }}" class="form_select_option">{{ use.nome }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
+        {% if request.session.usuario_permissao == 'Operador' %}
+        <div class="form_grupo">
+            <label for="atendente" class="form_label">Atendente</label>
+            <input type="text" disabled="" name="atendente" class="form_input" id="atendente" placeholder="{{ treinamento.atendente }}" required value="{{ treinamento.atendente.id }}">
+        </div>
+        {% endif %}
+
+        <div class="form_grupo">
+            <br>
+            <label for="estadocivil" class="text">Status</label>
+            <select name="status" id="status" class="dropdown" required>
+                <option disabled class="form_select_option" value="">Selecione</option>
+                {% for sta in status %}
+                {% if treinamento.status.id == sta.id %}
+                <option selected value="{{sta.id}}" class="form_select_option">{{sta.status}}</option>
+                {% else %}
+                <option value="{{sta.id}}" class="form_select_option">{{sta.status}}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            <p></p>
+        </div>
+
+        <div class="form_message">
+            <label for="observ33acao" class="form_message_label"> Observação (Não obrigatorio)</label>
+            <textarea name="observacao" class="form_input" id="observacao" placeholder="observacao"cols="30" rows="3" class="form_input message_input"></textarea>
+        </div>
+         <div class="submit">
+            <input type="hidden" name="acao" value="enviar">
+            <button type="submit" name="Submit" class="submit_btn" >Salvar</button>
+            <a href="{% url 'treinamentos-finalizados' %}"><h3>Voltar</h3></a>
+        </div>
+    </form>
+</div>
+
+{% include 'footer.html' %}
+
+{% endblock %}
