@@ -4,23 +4,7 @@ from core.models import Base
 
 
 class Permissao(Base):
-
-    OPÇÕES = (
-        (True, 'Sim'),
-        (False, 'Não'),
-    )
-
-    nome = models.CharField('Nome da permissão?',max_length=50)
-    cadastrar_empresa = models.BooleanField(choices=OPÇÕES, default=False)
-    editar_empresa = models.BooleanField(choices=OPÇÕES, default=False)
-    visualizar_empresa = models.BooleanField(choices=OPÇÕES, default=False)
-    cadastrar_treinamento = models.BooleanField(choices=OPÇÕES, default=False)
-    editar_treinamento = models.BooleanField(choices=OPÇÕES, default=False)
-    visualizar_treinamento = models.BooleanField(choices=OPÇÕES, default=False)
-    cadastrar_usuario = models.BooleanField(choices=OPÇÕES, default=False)
-    editar_usuario = models.BooleanField(choices=OPÇÕES, default=False)
-    visualizar_usuario = models.BooleanField(choices=OPÇÕES, default=False)
-
+    nome = models.CharField(max_length=50)
 
     # Salvar os dados no banco
     def register(self):
@@ -45,8 +29,8 @@ class Usuarios(Base):
         self.save()
 
     class Meta:
-        verbose_name = 'Usuario do sistema'
-        verbose_name_plural = 'Usuarios do sistema'
+        verbose_name = 'Usuario'
+        verbose_name_plural = 'Usuarios'
 
     @staticmethod
     def get_cliente_by_usuario(user):

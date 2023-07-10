@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView  # Import do TemplateView para trabalhar com class based view
 from django.views import View
 from django.shortcuts import render, redirect, HttpResponseRedirect
-from usuarios.models import Usuarios, Permissao
+from usuarioss.models import Usuarios, Permissao
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib import messages
 
@@ -26,7 +26,7 @@ class LoginView(TemplateView):
 
         user = request.POST.get('user')
         senha = request.POST.get('senha')
-        usuario = Usuarios.get_cliente_by_usuario(user)
+        usuario = Usuarios.get_cliente_by_user(user)
 
         if usuario:
             """Verifica se o email inserido estava no banco de dados de usuarios"""
@@ -38,7 +38,6 @@ class LoginView(TemplateView):
                 nome = usuario.nome[0:16]  # Variavel contendo nome do usuario
                 request.session['usuario_nome'] = nome
                 request.session['usuario_permissao'] = str(usuario.permissao_login)  # Salvando nome na session
-                print(request.session['usuario_permissao'])
                 # request.session['adm'] = str(Permissao.objects.get(id=1))
                 # equest.session['user'] = str(Permissao.objects.get(id=3))
 

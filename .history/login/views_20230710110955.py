@@ -24,9 +24,9 @@ class LoginView(TemplateView):
     def post(self, request):
         """Faz a verificação dos dados do cliente ao enviar os dados via POST"""
 
-        user = request.POST.get('user')
+        email = request.POST.get('email')
         senha = request.POST.get('senha')
-        usuario = Usuarios.get_cliente_by_usuario(user)
+        usuario = Usuarios.get_cliente_by_email(email)
 
         if usuario:
             """Verifica se o email inserido estava no banco de dados de usuarios"""
@@ -38,9 +38,8 @@ class LoginView(TemplateView):
                 nome = usuario.nome[0:16]  # Variavel contendo nome do usuario
                 request.session['usuario_nome'] = nome
                 request.session['usuario_permissao'] = str(usuario.permissao_login)  # Salvando nome na session
-                print(request.session['usuario_permissao'])
                 # request.session['adm'] = str(Permissao.objects.get(id=1))
-                # equest.session['user'] = str(Permissao.objects.get(id=3))
+                r# equest.session['user'] = str(Permissao.objects.get(id=3))
 
 
 

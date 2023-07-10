@@ -11,15 +11,15 @@ class Permissao(Base):
     )
 
     nome = models.CharField('Nome da permissão?',max_length=50)
-    cadastrar_empresa = models.BooleanField(choices=OPÇÕES, default=False)
-    editar_empresa = models.BooleanField(choices=OPÇÕES, default=False)
-    visualizar_empresa = models.BooleanField(choices=OPÇÕES, default=False)
-    cadastrar_treinamento = models.BooleanField(choices=OPÇÕES, default=False)
-    editar_treinamento = models.BooleanField(choices=OPÇÕES, default=False)
-    visualizar_treinamento = models.BooleanField(choices=OPÇÕES, default=False)
-    cadastrar_usuario = models.BooleanField(choices=OPÇÕES, default=False)
-    editar_usuario = models.BooleanField(choices=OPÇÕES, default=False)
-    visualizar_usuario = models.BooleanField(choices=OPÇÕES, default=False)
+    empresa_cadastro = models.BooleanField(choices=OPÇÕES, default=False)
+    empresa_editar = models.BooleanField(choices=OPÇÕES, default=False)
+    empresa_visualizar = models.BooleanField(choices=OPÇÕES, default=False)
+    treinamento_cadastro = models.BooleanField(choices=OPÇÕES, default=False)
+    treinamento_editar = models.BooleanField(choices=OPÇÕES, default=False)
+    treinamento_visualizar = models.BooleanField(choices=OPÇÕES, default=False)
+    usuario_cadastro = models.BooleanField(choices=OPÇÕES, default=False)
+    usuario_editar = models.BooleanField(choices=OPÇÕES, default=False)
+    usuario_visualizar = models.BooleanField(choices=OPÇÕES, default=False)
 
 
     # Salvar os dados no banco
@@ -31,7 +31,7 @@ class Permissao(Base):
 
     def __str__(self) -> str:
         """Retorna o str"""
-        return f'{self.nome}'
+        return f'{self.nome}'>
 
 
 class Usuarios(Base):

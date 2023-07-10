@@ -4,22 +4,16 @@ from core.models import Base
 
 
 class Permissao(Base):
-
-    OPÇÕES = (
-        (True, 'Sim'),
-        (False, 'Não'),
-    )
-
     nome = models.CharField('Nome da permissão?',max_length=50)
-    cadastrar_empresa = models.BooleanField(choices=OPÇÕES, default=False)
-    editar_empresa = models.BooleanField(choices=OPÇÕES, default=False)
-    visualizar_empresa = models.BooleanField(choices=OPÇÕES, default=False)
-    cadastrar_treinamento = models.BooleanField(choices=OPÇÕES, default=False)
-    editar_treinamento = models.BooleanField(choices=OPÇÕES, default=False)
-    visualizar_treinamento = models.BooleanField(choices=OPÇÕES, default=False)
-    cadastrar_usuario = models.BooleanField(choices=OPÇÕES, default=False)
-    editar_usuario = models.BooleanField(choices=OPÇÕES, default=False)
-    visualizar_usuario = models.BooleanField(choices=OPÇÕES, default=False)
+    empresa_cadastro = models.BooleanField('Permissão para cadastrar empresa?', default=False)
+    empresa_editar = models.BooleanField('Permissão para editar empresa?', default=False)
+    empresa_visualizar = models.BooleanField('Permissão para visualizar empresa?', default=False)
+    treinamento_cadastro = models.BooleanField('Permissão para cadstrar treinamento?', default=False)
+    treinamento_editar = models.BooleanField('Permissão para editar treinamento?', default=False)
+    treinamento_visualizar = models.BooleanField('Permissão para visualizar treinamento?', default=False)
+    usuario_cadastro = models.BooleanField('Permissão para cadstrar usuário?', default=False)
+    usuario_editar = models.BooleanField('Permissão para editar usuário?', default=False)
+    usuario_visualizar = models.BooleanField('Permissão para visualizar usuário?', default=False)
 
 
     # Salvar os dados no banco
