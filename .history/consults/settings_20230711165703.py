@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'core',
     'empresas',
     'usuarios',
+    'treinamentos',
     'treinamentos.apps.TreinamentosConfig'
 ]
 

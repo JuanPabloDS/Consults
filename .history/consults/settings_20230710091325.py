@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'core',
     'empresas',
     'usuarios',
-    'treinamentos.apps.TreinamentosConfig'
+    'treinamentos',
 ]
 
 MIDDLEWARE = [

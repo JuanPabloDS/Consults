@@ -164,6 +164,8 @@ class AgendarTreinamentoView(TemplateView):
             observacao = request.POST.get('observacao')
             sistema = request.POST.get('sistema')
 
+            print(atendente)
+
             if not request.session['adm'] == request.session['usuario_permissao']:
                 atendente = Usuarios.objects.get(id=int(request.session['usuario']))
             else:

@@ -164,6 +164,8 @@ class AgendarTreinamentoView(TemplateView):
             observacao = request.POST.get('observacao')
             sistema = request.POST.get('sistema')
 
+            print(atendente)
+
             if not request.session['adm'] == request.session['usuario_permissao']:
                 atendente = Usuarios.objects.get(id=int(request.session['usuario']))
             else:
@@ -341,17 +343,16 @@ class FinalizarTreinamentoView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            aut_editar_treinamento = Permissao.objects.get(nome=request.session['usuario_permissao']).editar_treinamento
-            if aut_editar_treinamento:
+            if request.session['usuario_permissao'] == str(Permissao.objects.get(id=3)):
+                return redirect('/treinamentos-abertos')
+            else:
 
                 treinamento = Treinamentos.objects.get(id=pk)
                 treinamento.status = TreinamentoStatus.objects.get(id=2)
                 treinamento.save()
 
 
-                return redirect('/')
-            else:
-                return redirect('/')
+                return redirect(f'/')
 
 
 

@@ -63,6 +63,18 @@ class Treinamentos(Base):
              error_message = 'A data é inválida.'
              return error_message
 
+        try:
+            hora = datetime.strptime(treinamento.horario, '%H:%M')
+            hora = hora.time()
+            inicio = datetime.strptime('09:00', '%H:%M')
+            inicio = inicio.time()
+            fim = datetime.strptime('17:00', '%H:%M')
+            fim = fim.time()
+
+        except:
+             error_message = 'O horário é inválido.'
+             return error_message
+
 
         if (not treinamento.empresa):
             error_message = 'Insira a nome da empresa corretamente'
@@ -78,6 +90,10 @@ class Treinamentos(Base):
             error_message = 'O cliente precisa ter mais do que 3 caracteres'
         elif len(treinamento.cliente) > 100:
             error_message = 'O cliente precisa ter menos do que 100 caracteres'
+        elif hora < inicio:
+            error_message = 'O horário é inválido.'
+        elif hora > fim:
+            error_message = 'O horário é inválido.'
         elif len(treinamento.observacao) > 200:
             error_message = 'Você atingiu o número maximo de caracteres em (observações) '
         elif Empresas.is_cnpj_valido(treinamento.cnpj) == False:

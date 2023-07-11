@@ -43,7 +43,7 @@
           <p>Empresas</p>
           <span></span>
         </li>
-        {% if autorizacao.cadastrar_empresa %}
+        {% if not request.session.usuario_permissao == request.session.user %}
 
         <li class="nav-item">
             <a class="nav-link" href="{% url 'cadastrar-empresa' %}">
@@ -52,14 +52,12 @@
             </a>
           </li>
           {% endif %}
-          {% if autorizacao.visualizar_empresa %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'listar-empresa' %}">
               <i class="mdi mdi-view-headline menu-icon"></i>
               <span class="menu-title">Listar</span>
             </a>
           </li>
-          {% endif %}
         <li class="nav-item sidebar-category">
             <p>Treinamento</p>
             <span></span>

@@ -21,8 +21,8 @@ class TreinamentoAView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            aut_visualizar_treinamento = Permissao.objects.get(nome=request.session['usuario_permissao']).visualizar_treinamento
-            if aut_visualizar_treinamento:
+            aut_cadastrar_empresa = Permissao.objects.get(nome=request.session['usuario_permissao']).cadastrar_empresa
+            if aut_cadastrar_empresa:
 
                 treinamentos = ''
 
@@ -76,46 +76,43 @@ class TreinamentoFView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            aut_visualizar_treinamento = Permissao.objects.get(nome=request.session['usuario_permissao']).visualizar_treinamento
-            if aut_visualizar_treinamento:
 
-                request.session['situacao'] = 'finalizados'
-                treinamentos = ''
+            request.session['situacao'] = 'finalizados'
+            treinamentos = ''
 
 
-                values = Treinamentos.objects.filter(
-                            Q(status=2)
-                        ).order_by('-id')
+            values = Treinamentos.objects.filter(
+                        Q(status=2)
+                    ).order_by('-id')
+            
 
-                if not len(values) == 0:
+            if not len(values) == 0:
 
-                    paginator = Paginator(values, 15)
+                paginator = Paginator(values, 15)
 
-                    # Esteja certo de que o `page request` é um inteiro. Se não, mostre a primeira página.
-                    try:
-                        page = int(request.GET.get('page', '1'))
-                    except ValueError:
-                        page = 1
+                # Esteja certo de que o `page request` é um inteiro. Se não, mostre a primeira página.
+                try:
+                    page = int(request.GET.get('page', '1'))
+                except ValueError:
+                    page = 1
 
-                    # Se o page request (9999) está fora da lista, mostre a última página.
-                    try:
-                        treinamentos = paginator.page(page)
-                    except (EmptyPage, InvalidPage):
-                        treinamentos = paginator.page(paginator.num_pages)
+                # Se o page request (9999) está fora da lista, mostre a última página.
+                try:
+                    treinamentos = paginator.page(page)
+                except (EmptyPage, InvalidPage):
+                    treinamentos = paginator.page(paginator.num_pages)
 
-                else:
-                    paginator = ''
-
-
-                context = {
-                        'treinamentos':treinamentos,
-                        'paginator': paginator,
-                }
-
-
-                return render( request, 'treinamentos-finalizados.html', context)
             else:
-                return redirect('/')
+                paginator = ''
+
+
+            context = {
+                    'treinamentos':treinamentos,
+                    'paginator': paginator,
+            }
+
+
+            return render( request, 'treinamentos-finalizados.html', context)
 
     template_name: str = 'treinamentos-finalizados.html'
 
@@ -129,8 +126,10 @@ class AgendarTreinamentoView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            aut_cadastrar_treinamento = Permissao.objects.get(nome=request.session['usuario_permissao']).cadastrar_treinamento
-            if aut_cadastrar_treinamento:
+            if request.session['usuario_permissao'] == str(Permissao.objects.get(id=3)):
+                return redirect('/treinamentos-abertos')
+            else:
+
                 data_atual = str(date.today())
 
                 context = {
@@ -140,8 +139,6 @@ class AgendarTreinamentoView(TemplateView):
                 }
 
                 return render( request, 'agendar-treinamento.html', context)
-            else:
-                return redirect('/')
 
 
 
@@ -163,6 +160,8 @@ class AgendarTreinamentoView(TemplateView):
             atendente = request.POST.get('atendente')
             observacao = request.POST.get('observacao')
             sistema = request.POST.get('sistema')
+
+            print(atendente)
 
             if not request.session['adm'] == request.session['usuario_permissao']:
                 atendente = Usuarios.objects.get(id=int(request.session['usuario']))
@@ -209,15 +208,16 @@ class AgendarTreinamentoView(TemplateView):
 
 
 class ExcluirTreinamentoView(TemplateView):
-
+     
      def get(self, request, pk) :
 
         if not request.session.has_key('usuario'):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            aut_editar_treinamento = Permissao.objects.get(nome=request.session['usuario_permissao']).editar_treinamento
-            if aut_editar_treinamento:
+            if request.session['usuario_permissao'] == str(Permissao.objects.get(id=3)):
+                return redirect('/treinamentos-abertos')
+            else:
 
                 treinamento = Treinamentos.objects.get(id=pk)
                 treinamento.delete()
@@ -225,9 +225,6 @@ class ExcluirTreinamentoView(TemplateView):
 
                 situacao = request.session['situacao']
                 return redirect(f'/treinamentos-{situacao}')
-            else:
-                return redirect('/')
-
 
 
 class EditarTreinamentoView(TemplateView):
@@ -239,8 +236,9 @@ class EditarTreinamentoView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            aut_editar_treinamento = Permissao.objects.get(nome=request.session['usuario_permissao']).editar_treinamento
-            if aut_editar_treinamento:
+            if request.session['usuario_permissao'] == str(Permissao.objects.get(id=3)):
+                return redirect('/treinamentos-abertos')
+            else:
 
                 if Treinamentos.objects.filter(id=pk):
 
@@ -261,8 +259,7 @@ class EditarTreinamentoView(TemplateView):
                     messages.error(request, 'Treinamento não encontrada')
                     situacao = request.session['situacao']
                     return redirect(f'/treinamentos-{situacao}')
-            else:
-                return redirect('/')
+    
 
     def post(self, request, pk):
         """Faz a verificação dos dados do cliente ao enviar os dados via POST"""
@@ -271,61 +268,59 @@ class EditarTreinamentoView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            aut_editar_treinamento = Permissao.objects.get(nome=request.session['usuario_permissao']).editar_treinamento
-            if aut_editar_treinamento:
-                """Cadastro do treinamento """
-                empresa = request.POST.get('empresa')
-                cnpj = request.POST.get('cnpj')
-                cliente = request.POST.get('cliente')
-                telefone = request.POST.get('telefone')
-                data = request.POST.get('data')
-                horario = request.POST.get('horario')
-                atendente = request.POST.get('atendente')
-                observacao = request.POST.get('observacao')
-                sistema = request.POST.get('sistema')
-                status = request.POST.get('status')
 
-                if not Usuarios.objects.filter(id=atendente):
+            """Cadastro do treinamento """
+            empresa = request.POST.get('empresa')
+            cnpj = request.POST.get('cnpj')
+            cliente = request.POST.get('cliente')
+            telefone = request.POST.get('telefone')
+            data = request.POST.get('data')
+            horario = request.POST.get('horario')
+            atendente = request.POST.get('atendente')
+            observacao = request.POST.get('observacao')
+            sistema = request.POST.get('sistema')
+            status = request.POST.get('status')
 
-                        messages.error(request, 'Usuário para esse atendimento é inválido!')
-                        return redirect('/novo-usuario')
-                else:
-                    atendente = Usuarios.objects.get(id=atendente)
+            if not Usuarios.objects.filter(id=atendente):
 
-                treinamento_edit = Treinamentos.objects.get(id=pk)
-
-                treinamento = Treinamentos(
-                        id=pk,
-                        criado=treinamento_edit.criado,
-                        modificado=date.today(),
-                        ativo=True,
-                        empresa = empresa,
-                        cnpj = cnpj,
-                        cliente = cliente,
-                        telefone = telefone,
-                        data = data,
-                        horario = horario,
-                        atendente = atendente,
-                        sistema = Sistemas.objects.get(id=int(sistema)),
-                        observacao = observacao,
-                        status = TreinamentoStatus.objects.get(id=status)
-                    )
-
-
-                error_message = Treinamentos.validarTreinamento(treinamento, sistema)
-
-
-                if not error_message:
-                    treinamento.register()  # Registrar
-                    situacao = request.session['situacao']
-                    return redirect(f'/treinamentos-{situacao}')
-                else:
-                        """Se existir dado invalidos retorna para página de erro"""
-                        messages.error(request, error_message)
-                        situacao = request.session['situacao']
-                        return redirect(f'/editar-treinamento/{pk}')
+                    messages.error(request, 'Usuário para esse atendimento é inválido!')
+                    return redirect('/novo-usuario')
             else:
-                return redirect('/')
+                atendente = Usuarios.objects.get(id=atendente)
+
+            
+            treinamento_edit = Treinamentos.objects.get(id=pk)
+
+            treinamento = Treinamentos(
+                    id=pk,
+                    criado=treinamento_edit.criado,
+                    modificado=date.today(),
+                    ativo=True,
+                    empresa = empresa,
+                    cnpj = cnpj,
+                    cliente = cliente,
+                    telefone = telefone,
+                    data = data,
+                    horario = horario,
+                    atendente = atendente,
+                    sistema = Sistemas.objects.get(id=int(sistema)),
+                    observacao = observacao,
+                    status = TreinamentoStatus.objects.get(id=status)
+                )
+
+
+            error_message = Treinamentos.validarTreinamento(treinamento, sistema)
+
+
+            if not error_message:
+                treinamento.register()  # Registrar
+                situacao = request.session['situacao']
+                return redirect(f'/treinamentos-{situacao}')
+            else:
+                    """Se existir dado invalidos retorna para página de erro"""
+                    messages.error(request, error_message)
+                    situacao = request.session['situacao']
+                    return redirect(f'/editar-treinamento/{pk}')
 
 
 
@@ -341,17 +336,16 @@ class FinalizarTreinamentoView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            aut_editar_treinamento = Permissao.objects.get(nome=request.session['usuario_permissao']).editar_treinamento
-            if aut_editar_treinamento:
+            if request.session['usuario_permissao'] == str(Permissao.objects.get(id=3)):
+                return redirect('/treinamentos-abertos')
+            else:
 
                 treinamento = Treinamentos.objects.get(id=pk)
                 treinamento.status = TreinamentoStatus.objects.get(id=2)
                 treinamento.save()
 
 
-                return redirect('/')
-            else:
-                return redirect('/')
+                return redirect(f'/')
 
 
 

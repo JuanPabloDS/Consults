@@ -83,7 +83,7 @@
                   <td>
                     {{emp.contrato}}
                   </td>
-                  {% if autorizacao.editar_empresa %}
+                  {% if not request.session.usuario_permissao == request.session.user %}
                   <td>
                     <a href="{% url 'editar-empresa' emp.id %}"><i class="mdi mdi-pencil menu-icon"></i></a>
                   </td>

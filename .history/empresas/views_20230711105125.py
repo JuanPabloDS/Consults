@@ -87,59 +87,57 @@ class PesquisarEmView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            aut_listar_empresa = Permissao.objects.get(nome=request.session['usuario_permissao']).visualizar_empresa
 
-            if aut_listar_empresa:
-
-                if self.request.GET.get("search"):
-                        """Recebe os dados da busca que são passados na URL"""
-                        query = self.request.GET.get("search")
-                else:
-                    return redirect('/')
-
-                values = SistemaQtdFuncionarios.objects.all().order_by('-id')
-
-
-
-                if query:
-                    empresas = SistemaQtdFuncionarios.objects.filter(
-                        Q(empresa__razao__icontains=query) | Q(empresa__cnpj__icontains=query) | Q(empresa__fantasia__icontains=query)
-                        | Q(empresa__nome_adicional__icontains=query)
-
-                        )
-
-                if not len(empresas) == 0:
-
-                    paginator = Paginator(empresas, 15)
-
-                    # Esteja certo de que o `page request` é um inteiro. Se não, mostre a primeira página.
-                    try:
-                        page = int(request.GET.get('page', '1'))
-                    except ValueError:
-                        page = 1
-
-                    # Se o page request (9999) está fora da lista, mostre a última página.
-                    try:
-                        empresas = paginator.page(page)
-                    except (EmptyPage, InvalidPage):
-                        empresas = paginator.page(paginator.num_pages)
-
-                else:
-                    paginator = ''
-
-                autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
-
-                context = {
-                        'empresas': empresas,
-                        'sistemas': Sistemas.objects.all(),
-                        'paginator': paginator,
-                        'autorizacao': autorizacao
-                    }
-
-                return render( request, 'pesquisar-empresa.html', context)
+            if self.request.GET.get("search"):
+                    """Recebe os dados da busca que são passados na URL"""
+                    query = self.request.GET.get("search")
             else:
                 return redirect('/')
-    
+
+            values = SistemaQtdFuncionarios.objects.all().order_by('-id')
+
+
+
+            if query:
+                empresas = SistemaQtdFuncionarios.objects.filter(
+                    Q(empresa__razao__icontains=query) | Q(empresa__cnpj__icontains=query) | Q(empresa__fantasia__icontains=query)
+                    | Q(empresa__nome_adicional__icontains=query)
+
+                    )
+
+
+
+            if not len(empresas) == 0:
+
+                paginator = Paginator(empresas, 15)
+
+                # Esteja certo de que o `page request` é um inteiro. Se não, mostre a primeira página.
+                try:
+                    page = int(request.GET.get('page', '1'))
+                except ValueError:
+                    page = 1
+
+                # Se o page request (9999) está fora da lista, mostre a última página.
+                try:
+                    empresas = paginator.page(page)
+                except (EmptyPage, InvalidPage):
+                    empresas = paginator.page(paginator.num_pages)
+
+            else:
+                paginator = ''
+
+            autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
+
+            context = {
+                    'empresas': empresas,
+                    'sistemas': Sistemas.objects.all(),
+                    'paginator': paginator,
+                    'autorizacao': autorizacao
+                }
+
+
+
+        return render( request, 'pesquisar-empresa.html', context)
 
     template_name: str = 'pesquisar-empresa.html'
 

@@ -23,7 +23,7 @@ class ListarEmView(TemplateView):
 
             aut_listar_empresa = Permissao.objects.get(nome=request.session['usuario_permissao']).visualizar_empresa
 
-            if aut_listar_empresa:
+            if aut_listar_empresa == True:
 
                 values = SistemaQtdFuncionarios.objects.all().order_by('-id')
                 select = ''
@@ -60,14 +60,12 @@ class ListarEmView(TemplateView):
 
                 else:
                     paginator = ''
-                autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
 
                 context = {
                     'empresas': empresas,
                     'sistemas': Sistemas.objects.all(),
                     'select': select,
                     'paginator': paginator,
-                    'autorizacao': autorizacao
                 }
 
                 return render( request, 'listar-empresa.html', context)
@@ -87,59 +85,55 @@ class PesquisarEmView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            aut_listar_empresa = Permissao.objects.get(nome=request.session['usuario_permissao']).visualizar_empresa
 
-            if aut_listar_empresa:
-
-                if self.request.GET.get("search"):
-                        """Recebe os dados da busca que são passados na URL"""
-                        query = self.request.GET.get("search")
-                else:
-                    return redirect('/')
-
-                values = SistemaQtdFuncionarios.objects.all().order_by('-id')
-
-
-
-                if query:
-                    empresas = SistemaQtdFuncionarios.objects.filter(
-                        Q(empresa__razao__icontains=query) | Q(empresa__cnpj__icontains=query) | Q(empresa__fantasia__icontains=query)
-                        | Q(empresa__nome_adicional__icontains=query)
-
-                        )
-
-                if not len(empresas) == 0:
-
-                    paginator = Paginator(empresas, 15)
-
-                    # Esteja certo de que o `page request` é um inteiro. Se não, mostre a primeira página.
-                    try:
-                        page = int(request.GET.get('page', '1'))
-                    except ValueError:
-                        page = 1
-
-                    # Se o page request (9999) está fora da lista, mostre a última página.
-                    try:
-                        empresas = paginator.page(page)
-                    except (EmptyPage, InvalidPage):
-                        empresas = paginator.page(paginator.num_pages)
-
-                else:
-                    paginator = ''
-
-                autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
-
-                context = {
-                        'empresas': empresas,
-                        'sistemas': Sistemas.objects.all(),
-                        'paginator': paginator,
-                        'autorizacao': autorizacao
-                    }
-
-                return render( request, 'pesquisar-empresa.html', context)
+            if self.request.GET.get("search"):
+                    """Recebe os dados da busca que são passados na URL"""
+                    query = self.request.GET.get("search")
             else:
                 return redirect('/')
-    
+
+            values = SistemaQtdFuncionarios.objects.all().order_by('-id')
+
+
+
+            if query:
+                empresas = SistemaQtdFuncionarios.objects.filter(
+                    Q(empresa__razao__icontains=query) | Q(empresa__cnpj__icontains=query) | Q(empresa__fantasia__icontains=query)
+                    | Q(empresa__nome_adicional__icontains=query)
+
+                    )
+
+
+
+            if not len(empresas) == 0:
+
+                paginator = Paginator(empresas, 15)
+
+                # Esteja certo de que o `page request` é um inteiro. Se não, mostre a primeira página.
+                try:
+                    page = int(request.GET.get('page', '1'))
+                except ValueError:
+                    page = 1
+
+                # Se o page request (9999) está fora da lista, mostre a última página.
+                try:
+                    empresas = paginator.page(page)
+                except (EmptyPage, InvalidPage):
+                    empresas = paginator.page(paginator.num_pages)
+
+            else:
+                paginator = ''
+
+            context = {
+                    'empresas': empresas,
+                    'sistemas': Sistemas.objects.all(),
+                    'paginator': paginator,
+
+                }
+
+
+
+        return render( request, 'pesquisar-empresa.html', context)
 
     template_name: str = 'pesquisar-empresa.html'
 
@@ -152,17 +146,19 @@ class CadastroEmView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            aut_cadastrar_empresa = Permissao.objects.get(nome=request.session['usuario_permissao']).cadastrar_empresa
-            if aut_cadastrar_empresa:
+            aut_listar_empresa = Permissao.objects.get(nome=request.session['usuario_permissao']).cadastrar_empresa
+            if aut_listar_empresa == True:
 
-                autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
+                if request.session['usuario_permissao'] == str(Permissao.objects.get(id=3)):
+                    return redirect('/listar-empresa')
+                else:
 
-                context = {
-                    'sistemas': Sistemas.objects.all(),
-                    'autorizacao': autorizacao
-                }
 
-                return render( request, 'cadastrar-empresa.html', context)
+                    context = {
+                        'sistemas': Sistemas.objects.all(),
+                    }
+
+                    return render( request, 'cadastrar-empresa.html', context)
             else:
                 return redirect('/')
 
@@ -174,62 +170,64 @@ class CadastroEmView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            aut_cadastrar_empresa = Permissao.objects.get(nome=request.session['usuario_permissao']).cadastrar_empresa
-            if aut_cadastrar_empresa:
 
-                razao = request.POST.get('razao')
-                cnpj = request.POST.get('cnpj')
-                fantasia = request.POST.get('fantasia')
-                nome_adicional = request.POST.get('nome_adicional')
-                email = request.POST.get('email')
-                observacoes = request.POST.get('observacao')
+            razao = request.POST.get('razao')
+            cnpj = request.POST.get('cnpj')
+            fantasia = request.POST.get('fantasia')
+            nome_adicional = request.POST.get('nome_adicional')
+            email = request.POST.get('email')
+            observacoes = request.POST.get('observacao')
 
-                """Cadastro do sistema e quantidade de pessoas"""
-                sistema = request.POST.get('sistema')
-                funcionarios = request.POST.get('funcionarios')
-                contrato = request.POST.get('contrato')
-                suporte = request.POST.get('suporte')
 
-                    # Criar a emrpesa
-                empresa = Empresas( razao=razao,
-                                    cnpj=cnpj,
-                                    fantasia=fantasia,
-                                    nome_adicional=nome_adicional,
-                                    email=email,
-                                    observacoes=observacoes
-                                    )
+            """Cadastro do sistema e quantidade de pessoas"""
+            sistema = request.POST.get('sistema')
+            funcionarios = request.POST.get('funcionarios')
+            contrato = request.POST.get('contrato')
+            suporte = request.POST.get('suporte')
 
-                error_message = Empresas.validarEmpresa(empresa)
 
+
+                # Criar a emrpesa
+            empresa = Empresas( razao=razao,
+                                cnpj=cnpj,
+                                fantasia=fantasia,
+                                nome_adicional=nome_adicional,
+                                email=email,
+                                observacoes=observacoes
+                                )
+
+
+
+
+            error_message = Empresas.validarEmpresa(empresa)
+
+
+            if not error_message:
+                """Se não tiver mensagem de erro"""
+                error_message = Empresas.validarSistemaQtd(sistema, funcionarios, contrato, suporte)
 
                 if not error_message:
-                    """Se não tiver mensagem de erro"""
-                    error_message = Empresas.validarSistemaQtd(sistema, funcionarios, contrato, suporte)
+                    empresa.register()  # Registrar empresa
 
-                    if not error_message:
-                        empresa.register()  # Registrar empresa
+                    sistema_qtd_funcionarios = SistemaQtdFuncionarios(  empresa = Empresas.objects.get(id=(empresa.id)),
+                                                                    sistema = Sistemas.objects.get(id=int(sistema)),
+                                                                    quantidade = funcionarios,
+                                                                    contrato = contrato,
+                                                                    suporte = suporte
+                                                                    )
 
-                        sistema_qtd_funcionarios = SistemaQtdFuncionarios(  empresa = Empresas.objects.get(id=(empresa.id)),
-                                                                        sistema = Sistemas.objects.get(id=int(sistema)),
-                                                                        quantidade = funcionarios,
-                                                                        contrato = contrato,
-                                                                        suporte = suporte
-                                                                        )
+                    messages.success(request, 'Empresa cadastrada com sucesso!')
+                    sistema_qtd_funcionarios.register()
 
-                        messages.success(request, 'Empresa cadastrada com sucesso!')
-                        sistema_qtd_funcionarios.register()
-
-                        return redirect('/listar-empresa')
-                    else:
-                        """Se existir dado invalidos retorna para página de erro"""
-                        messages.error(request, error_message)
-                        return redirect('/cadastrar-empresa')
+                    return redirect('/listar-empresa')
                 else:
                     """Se existir dado invalidos retorna para página de erro"""
                     messages.error(request, error_message)
                     return redirect('/cadastrar-empresa')
             else:
-                return redirect('/')
+                """Se existir dado invalidos retorna para página de erro"""
+                messages.error(request, error_message)
+                return redirect('/cadastrar-empresa')
 
 
 
@@ -249,25 +247,24 @@ class EditarEmView(DetailView):
         else:
             aut_editar_empresa = Permissao.objects.get(nome=request.session['usuario_permissao']).editar_empresa
 
-            if aut_editar_empresa:
-
-                if SistemaQtdFuncionarios.objects.filter(id=pk):
-                    empresa = SistemaQtdFuncionarios.objects.get(id=pk)
-
-                    autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
-
-                    context = {
-                        'empresa' : empresa,
-                        'sistemas': Sistemas.objects.all(),
-                        'autorizacao': autorizacao
-                    }
-
-
-                    return render( request, 'editar-empresa.html', context)
-
-                else:
-                    messages.error(request, 'Empresa não encontrada')
+            if aut_editar_empresa == True:
+                if request.session['usuario_permissao'] == str(Permissao.objects.get(id=3)):
                     return redirect('/listar-empresa')
+                else:
+                    if SistemaQtdFuncionarios.objects.filter(id=pk):
+                        empresa = SistemaQtdFuncionarios.objects.get(id=pk)
+
+                        context = {
+                            'empresa' : empresa,
+                            'sistemas': Sistemas.objects.all()
+                        }
+
+
+                        return render( request, 'editar-empresa.html', context)
+
+                    else:
+                        messages.error(request, 'Empresa não encontrada')
+                        return redirect('/listar-empresa')
             else:
                 return redirect('/')
 
@@ -281,7 +278,7 @@ class EditarEmView(DetailView):
         else:
             aut_editar_empresa = Permissao.objects.get(nome=request.session['usuario_permissao']).editar_empresa
 
-            if aut_editar_empresa:
+            if aut_editar_empresa == True:
 
                 empre_edi = SistemaQtdFuncionarios.objects.get(id=pk)
 
@@ -354,6 +351,8 @@ class EditarEmView(DetailView):
 
 class ExcluirEmView(TemplateView):
 
+
+
     def get(self, request, pk):
 
         if not request.session.has_key('usuario'):
@@ -362,13 +361,16 @@ class ExcluirEmView(TemplateView):
         else:
             aut_editar_empresa = Permissao.objects.get(nome=request.session['usuario_permissao']).editar_empresa
 
-            if aut_editar_empresa:
+            if aut_editar_empresa == True:
 
-                messages.success(request, 'Empresa excluida com sucesso!')
-                sistema_empresa = SistemaQtdFuncionarios.objects.get(id=pk)
-                empresa = Empresas.objects.get(id=sistema_empresa.empresa.id)
-                empresa.delete()
-                sistema_empresa.delete()
+                if request.session['usuario_permissao'] == str(Permissao.objects.get(id=3)):
+                    return redirect('/listar-empresa')
+                else:
+                    messages.success(request, 'Empresa excluida com sucesso!')
+                    sistema_empresa = SistemaQtdFuncionarios.objects.get(id=pk)
+                    empresa = Empresas.objects.get(id=sistema_empresa.empresa.id)
+                    empresa.delete()
+                    sistema_empresa.delete()
             else:
                 return redirect('/')
 

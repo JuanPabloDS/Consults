@@ -11,7 +11,7 @@ from django.db.models import Q
 class IndexView(TemplateView):
 
     def get(self, request):
-
+        
         paginator = ''
 
         if not request.session.has_key('usuario'):
@@ -43,8 +43,7 @@ class IndexView(TemplateView):
             request.session['index'] = 'True'
 
             empresa = SistemaQtdFuncionarios.objects.all().order_by('-id')[:6]
-            autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
-
+            
             if not len(empresa) == 0:
                 paginator = 1
 
@@ -54,7 +53,6 @@ class IndexView(TemplateView):
                 'empresas': empresa,
                 'trein_cont': trei_cont,
                 'paginator': paginator,
-                'autorizacao': autorizacao
             }
 
 
