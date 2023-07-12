@@ -32,14 +32,13 @@ class IndexView(TemplateView):
             request.session['data'] = data
 
             values = Treinamentos.objects.filter(
-                        Q(status=1)
+                        Q(status='Aberto')
                     ).order_by('-id')
 
             trei_cont = len(values)
-            print(trei_cont)
 
             treinamentos = values[:6]
-            request.session['qtd_treinamentos'] = len(treinamentos)
+            request.session['qtd_treinamentos'] = len(values)
             request.session['index'] = 'True'
 
             empresa = SistemaQtdFuncionarios.objects.all().order_by('-id')[:6]

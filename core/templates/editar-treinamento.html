@@ -86,13 +86,13 @@
             <label for="estadocivil" class="text">Status</label>
             <select name="status" id="status" class="dropdown" required>
                 <option disabled class="form_select_option" value="">Selecione</option>
-                {% for sta in status %}
-                {% if treinamento.status.id == sta.id %}
-                <option selected value="{{sta.id}}" class="form_select_option">{{sta.status}}</option>
+                {% if treinamento.status == "Aberto" %}
+                <option selected value="Aberto" class="form_select_option">Aberto</option>
+                <option value="Finalizado" class="form_select_option">Finalizado</option>
                 {% else %}
-                <option value="{{sta.id}}" class="form_select_option">{{sta.status}}</option>
+                <option value="Aberto" class="form_select_option">Aberto</option>
+                <option selected value="Finalizado" class="form_select_option">Finalizado</option>
                 {% endif %}
-                {% endfor %}
             </select>
             <p></p>
         </div>

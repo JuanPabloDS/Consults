@@ -52,20 +52,18 @@
             </table>
         </div>
 
-        {% if request.session.usuario_permissao == 'Administrador' %}
+        {% if autorizacao.visualizar_usuario %}
         <div class="form_grupo">
             <br>
             <label for="atendente" class="form_label">Atendente</label>
             <select name="atendente" id="atendente" class="dropdown" required>
                 <option selected disabled class="form_select_option" value="">Selecione</option>
-                {% for use in usuarios %}
-                <option value="{{ use.id }}" class="form_select_option">{{ use.nome }}</option>
+                {% for user in usuarios %}
+                <option value="{{ use.id }}" class="form_select_option">{{ user.nome }}</option>
                 {% endfor %}
             </select>
         </div>
-        {% endif %}
-
-        {% if request.session.usuario_permissao == 'Operador' %}
+        {% else %}
         <div class="form_grupo">
             <label for="atendente" class="form_label">Atendente</label>
             <input type="text" disabled="" name="atendente" class="form_input" id="atendente" placeholder="{{ request.session.usuario_nome }}" required value="{{ request.session.usuario_nome }}">

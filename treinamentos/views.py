@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView  # Import do TemplateView para trabalhar com class based view
 from django.views import View
 from django.shortcuts import render, redirect, HttpResponseRedirect
-from treinamentos.models import Treinamentos, TreinamentoStatus
+from treinamentos.models import Treinamentos
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib import messages
 from empresas.models import Sistemas
@@ -9,8 +9,9 @@ from usuarios.models import Usuarios, Permissao
 from datetime import date
 from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-
 from django.views.generic import TemplateView  # Import do TemplateView para trabalhar com class based view
+
+
 
 
 class TreinamentoAView(TemplateView):
@@ -24,13 +25,12 @@ class TreinamentoAView(TemplateView):
             aut_visualizar_treinamento = Permissao.objects.get(nome=request.session['usuario_permissao']).visualizar_treinamento
             if aut_visualizar_treinamento:
 
-                treinamentos = ''
-
                 request.session['situacao'] = 'abertos'
+                treinamentos = ''
 
 
                 values = Treinamentos.objects.filter(
-                            Q(status=1)
+                            Q(status='Aberto')
                         ).order_by('-id')
 
 
@@ -53,8 +53,10 @@ class TreinamentoAView(TemplateView):
                 else:
                     paginator = ''
 
+                autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
 
                 context = {
+                    'autorizacao': autorizacao,
                     'treinamentos': treinamentos,
                     'paginator': paginator,
                 }
@@ -82,9 +84,8 @@ class TreinamentoFView(TemplateView):
                 request.session['situacao'] = 'finalizados'
                 treinamentos = ''
 
-
                 values = Treinamentos.objects.filter(
-                            Q(status=2)
+                            Q(status='Finalizado')
                         ).order_by('-id')
 
                 if not len(values) == 0:
@@ -107,7 +108,10 @@ class TreinamentoFView(TemplateView):
                     paginator = ''
 
 
+                autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
+
                 context = {
+                    'autorizacao': autorizacao,
                         'treinamentos':treinamentos,
                         'paginator': paginator,
                 }
@@ -132,11 +136,15 @@ class AgendarTreinamentoView(TemplateView):
             aut_cadastrar_treinamento = Permissao.objects.get(nome=request.session['usuario_permissao']).cadastrar_treinamento
             if aut_cadastrar_treinamento:
                 data_atual = str(date.today())
+                
+                autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
 
                 context = {
+                    'autorizacao': autorizacao,
                     'usuarios': Usuarios.objects.all(),
                     'data': data_atual,
                     'sistemas': Sistemas.objects.all(),
+                    
                 }
 
                 return render( request, 'agendar-treinamento.html', context)
@@ -152,55 +160,56 @@ class AgendarTreinamentoView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
+            aut_cadastrar_treinamento = Permissao.objects.get(nome=request.session['usuario_permissao']).cadastrar_treinamento
+            if aut_cadastrar_treinamento:
 
-            """Cadastro do treinamento """
-            empresa = request.POST.get('empresa')
-            cnpj = request.POST.get('cnpj')
-            cliente = request.POST.get('cliente')
-            telefone = request.POST.get('telefone')
-            data = request.POST.get('data')
-            horario = request.POST.get('horario')
-            atendente = request.POST.get('atendente')
-            observacao = request.POST.get('observacao')
-            sistema = request.POST.get('sistema')
+                """Cadastro do treinamento """
+                empresa = request.POST.get('empresa')
+                cnpj = request.POST.get('cnpj')
+                cliente = request.POST.get('cliente')
+                telefone = request.POST.get('telefone')
+                data = request.POST.get('data')
+                horario = request.POST.get('horario')
+                atendente = request.POST.get('atendente')
+                observacao = request.POST.get('observacao')
+                sistema = request.POST.get('sistema')
 
-            if not request.session['adm'] == request.session['usuario_permissao']:
-                atendente = Usuarios.objects.get(id=int(request.session['usuario']))
-            else:
+                atendente = Usuarios.objects.get(id=atendente)
 
-                if not Usuarios.objects.filter(id=atendente):
 
-                        messages.error(request, 'Usuário para esse atendimento é inválido!')
-                        return redirect('/novo-usuario')
+                treinamento = Treinamentos(
+                        empresa = empresa,
+                        cnpj = cnpj,
+                        cliente = cliente,
+                        telefone = telefone,
+                        data = data,
+                        horario = horario,
+                        atendente = atendente,
+                        sistema = Sistemas.objects.get(id=int(sistema)),
+                        observacao = observacao,
+                        status = 'Aberto'
+                    )
+
+
+                error_message = Treinamentos.validarTreinamento(treinamento, sistema)
+
+
+                if not error_message:
+                    messages.success(request, 'Treinamento agendado com sucesso!')
+                    treinamento.register()  # Registrar
+
+                    values = Treinamentos.objects.filter(
+                        Q(status='Aberto')
+                    ).order_by('-id')
+
+
+                    request.session['qtd_treinamentos'] = len(values)
+
+                    return redirect('/treinamentos-abertos')
                 else:
-                    atendente = Usuarios.objects.get(id=atendente)
-
-            treinamento = Treinamentos(
-                    empresa = empresa,
-                    cnpj = cnpj,
-                    cliente = cliente,
-                    telefone = telefone,
-                    data = data,
-                    horario = horario,
-                    atendente = atendente,
-                    sistema = Sistemas.objects.get(id=int(sistema)),
-                    observacao = observacao,
-                    status = TreinamentoStatus.objects.get(id=1)
-                )
-
-
-            error_message = Treinamentos.validarTreinamento(treinamento, sistema)
-
-
-            if not error_message:
-                messages.success(request, 'Treinamento agendado com sucesso!')
-                treinamento.register()  # Registrar
-
-                return redirect('/treinamentos-abertos')
-            else:
-                    """Se existir dado invalidos retorna para página de erro"""
-                    messages.error(request, error_message)
-                    return redirect('/agendar-treinamento')
+                        """Se existir dado invalidos retorna para página de erro"""
+                        messages.error(request, error_message)
+                        return redirect('/agendar-treinamento')
 
 
 
@@ -222,8 +231,13 @@ class ExcluirTreinamentoView(TemplateView):
                 treinamento = Treinamentos.objects.get(id=pk)
                 treinamento.delete()
 
+                values = Treinamentos.objects.filter(
+                        Q(status='Aberto')
+                    ).order_by('-id')
 
-                situacao = request.session['situacao']
+
+                request.session['qtd_treinamentos'] = len(values)
+
                 return redirect(f'/treinamentos-{situacao}')
             else:
                 return redirect('/')
@@ -246,11 +260,13 @@ class EditarTreinamentoView(TemplateView):
 
                     treinamento_edt = Treinamentos.objects.get(id=pk)
 
+                    autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
+
                     context = {
+                        'autorizacao': autorizacao,
                         'treinamento':treinamento_edt,
                         'usuarios':Usuarios.objects.all(),
                         'sistemas': Sistemas.objects.all(),
-                        'status': TreinamentoStatus.objects.all(),
 
                     }
 
@@ -308,7 +324,7 @@ class EditarTreinamentoView(TemplateView):
                         atendente = atendente,
                         sistema = Sistemas.objects.get(id=int(sistema)),
                         observacao = observacao,
-                        status = TreinamentoStatus.objects.get(id=status)
+                        status = status,
                     )
 
 
@@ -318,6 +334,14 @@ class EditarTreinamentoView(TemplateView):
                 if not error_message:
                     treinamento.register()  # Registrar
                     situacao = request.session['situacao']
+
+                    values = Treinamentos.objects.filter(
+                        Q(status='Aberto')
+                    ).order_by('-id')
+
+
+                    request.session['qtd_treinamentos'] = len(values)
+
                     return redirect(f'/treinamentos-{situacao}')
                 else:
                         """Se existir dado invalidos retorna para página de erro"""
@@ -345,8 +369,15 @@ class FinalizarTreinamentoView(TemplateView):
             if aut_editar_treinamento:
 
                 treinamento = Treinamentos.objects.get(id=pk)
-                treinamento.status = TreinamentoStatus.objects.get(id=2)
+                treinamento.status = 'Finalizado'
                 treinamento.save()
+
+                values = Treinamentos.objects.filter(
+                        Q(status='Aberto')
+                    ).order_by('-id')
+
+
+                request.session['qtd_treinamentos'] = len(values)
 
 
                 return redirect('/')

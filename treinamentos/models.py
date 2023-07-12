@@ -8,23 +8,15 @@ from empresas.models import Sistemas
 
 
 
-
-class TreinamentoStatus(models.Model):
-    status = models.CharField(max_length=10)
-
-    def register(self):
-        self.save()
-
-    class Meta:
-        verbose_name = 'Treinamento Status'
-        verbose_name_plural = 'Treinamentos status'
-
-    def __str__(self) -> str:
-        """Retorna o str"""
-        return f'{self.status}'
-
-
 class Treinamentos(Base):
+
+    OPCAO_1 = 'Aberto'
+    OPCAO_2 = 'Finalizado'
+
+    OPÇÕES = (
+        (OPCAO_1, 'Aberto'),
+        (OPCAO_2, 'Finalizado'),
+    )
     empresa = models.CharField(max_length=101)
     cnpj = models.CharField(max_length=20)
     cliente = models.CharField(max_length=50)
@@ -33,8 +25,8 @@ class Treinamentos(Base):
     horario = models.CharField(max_length=100)
     atendente = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
     sistema = models.ForeignKey(Sistemas, on_delete=models.CASCADE)
-    observacao = models.CharField(max_length=300)
-    status = models.ForeignKey(TreinamentoStatus, on_delete=models.CASCADE)
+    observacao = models.CharField(max_length=300, blank=True)
+    status = models.CharField(max_length=10, choices=OPÇÕES, default=True)
 
 
     def register(self):

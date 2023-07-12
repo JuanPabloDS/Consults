@@ -1,11 +1,7 @@
 from django.contrib import admin
 
-from .models import Treinamentos, TreinamentoStatus, Empresas
+from .models import Treinamentos
 
-
-@admin.register(TreinamentoStatus)
-class TreinamentoStatusAdmin(admin.ModelAdmin):
-    list_display = ('status',)
 
 
 @admin.register(Treinamentos)

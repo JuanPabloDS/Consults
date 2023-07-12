@@ -17,10 +17,8 @@ class UsuariosView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            permissao = Permissao.objects.get(id=1)
-            if not request.session['usuario_permissao'] == str(permissao):
-                return redirect('/')
-            else:
+            aut_visualizar_usuario = Permissao.objects.get(nome=request.session['usuario_permissao']).visualizar_usuario
+            if aut_visualizar_usuario:
 
 
                 values = Usuarios.objects.all()
@@ -46,14 +44,18 @@ class UsuariosView(TemplateView):
                     paginator = ''
 
 
+                autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
+
                 context = {
-                    'usuarios': usuarios,
+                    'autorizacao': autorizacao,
                     'paginator':paginator
                 }
 
 
 
                 return render(request, 'usuarios.html', context)
+            else:
+                return redirect('/')
 
     template_name: str = 'usuarios.html'
 
@@ -66,25 +68,37 @@ class EditarUsuariosView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            permissao = Permissao.objects.get(id=1)
-            if not request.session['usuario_permissao'] == str(permissao):
-                context = {
-                    'usuario':Usuarios.objects.get(id=int(request.session['usuario'])),
+            aut_editar_usuario = Permissao.objects.get(nome=request.session['usuario_permissao']).editar_usuario
+            if aut_editar_usuario:
+                aut_visualizar_usuario = Permissao.objects.get(nome=request.session['usuario_permissao']).visualizar_usuario
 
-                }
+                if not aut_visualizar_usuario:
+                    autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
+
+                    context = {
+                        'autorizacao': autorizacao,
+                        'usuario':Usuarios.objects.get(id=int(request.session['usuario'])),
+
+                    }
 
 
-                return render(request, 'editar-usuario.html', context)
+                    return render(request, 'editar-usuario.html', context)
 
+                else:
+
+                    autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
+
+                    context = {
+                        'autorizacao': autorizacao,
+                        'usuario':Usuarios.objects.get(id=pk),
+                        'permissao':Permissao.objects.all()
+                    }
+
+
+                    return render(request, 'editar-usuario.html', context)
             else:
-
-                context = {
-                    'usuario':Usuarios.objects.get(id=pk),
-                    'permissao':Permissao.objects.all()
-                }
-
-
-                return render(request, 'editar-usuario.html', context)
+                
+                return redirect('/')
     
 
     def post(self, request, pk):
@@ -93,73 +107,77 @@ class EditarUsuariosView(TemplateView):
             """Se o cliente já estiver logado retorna para index"""
             return redirect('/login')
         else:
-            permiss = Permissao.objects.get(id=1)
-            if not request.session['usuario_permissao'] == str(permiss):
-                pk = int(request.session['usuario'])
+            aut_editar_usuario = Permissao.objects.get(nome=request.session['usuario_permissao']).editar_usuario
+            if aut_editar_usuario:
+                permiss = Permissao.objects.get(id=1)
+                if not request.session['usuario_permissao'] == str(permiss):
+                    pk = int(request.session['usuario'])
 
-            nome = request.POST.get('nome')
-            email = request.POST.get('email')
-            senha = request.POST.get('senha')
-            conf_senha = request.POST.get('confirmar_senha')
-            permissao = request.POST.get('permissao')
-            print(permissao)
-            user = Usuarios.objects.get(id=pk)
+                nome = request.POST.get('nome')
+                email = request.POST.get('email')
+                senha = request.POST.get('senha')
+                conf_senha = request.POST.get('confirmar_senha')
+                permissao = request.POST.get('permissao')
+                print(permissao)
+                user = Usuarios.objects.get(id=pk)
 
-            if senha == '':
-                senha = user.senha
-            elif conf_senha == '':
-                conf_senha = senha
-            elif senha != conf_senha:
-                messages.error(request, 'As senhas não coincidem.')
-                return redirect(f'/editar-usuario/{pk}')
+                if senha == '':
+                    senha = user.senha
+                elif conf_senha == '':
+                    conf_senha = senha
+                elif senha != conf_senha:
+                    messages.error(request, 'As senhas não coincidem.')
+                    return redirect(f'/editar-usuario/{pk}')
 
-            if user.email == email:
-                pass
-            else:
-                if usuario.isExists():
-                    error_message = 'Endereço de email já existe.'
-
-
-            if not Permissao.objects.filter(id=int(permissao)).exists():
-
-                messages.error(request, 'A permissão para esse usuário não é válida')
-                return redirect(f'/editar-usuario/{pk}')
-
-            # Criar o cliente
-            usuario = Usuarios( 
-                                id=pk,
-                                criado=user.criado,
-                                modificado=date.today(),
-                                ativo=True,
-                                nome=nome,
-                                email=email,
-                                senha=senha,
-                                permissao_login=Permissao.objects.get(id=int(permissao)))
-
-            error_message = Usuarios.validarUsuarioEdit(usuario)
-
-            print(error_message)
-
-            if not error_message:
-                """Se não tiver mensagem de erro"""
-                if senha == user.senha:
-                    usuario.register() 
-                    if int(request.session['usuario']) == pk:
-                        request.session['usuario_nome'] = nome
-                        messages.success(request, 'Usuário alterado com sucesso!')
-
+                if user.email == email:
+                    pass
                 else:
-                    usuario.senha = make_password(usuario.senha)  # Cria a senha para usuario
-                    usuario.register()  # Registrar o usuario no banco
-                    messages.success(request, 'Usuário alterado com sucesso!')
-                    if int(request.session['usuario']) == pk:
-                        request.session['usuario_nome'] = nome
+                    if usuario.isExists():
+                        error_message = 'Endereço de email já existe.'
 
-                return redirect('/usuarios')
+
+                if not Permissao.objects.filter(id=int(permissao)).exists():
+
+                    messages.error(request, 'A permissão para esse usuário não é válida')
+                    return redirect(f'/editar-usuario/{pk}')
+
+                # Criar o cliente
+                usuario = Usuarios( 
+                                    id=pk,
+                                    criado=user.criado,
+                                    modificado=date.today(),
+                                    ativo=True,
+                                    nome=nome,
+                                    email=email,
+                                    senha=senha,
+                                    permissao_login=Permissao.objects.get(id=int(permissao)))
+
+                error_message = Usuarios.validarUsuarioEdit(usuario)
+
+                print(error_message)
+
+                if not error_message:
+                    """Se não tiver mensagem de erro"""
+                    if senha == user.senha:
+                        usuario.register() 
+                        if int(request.session['usuario']) == pk:
+                            request.session['usuario_nome'] = nome
+                            messages.success(request, 'Usuário alterado com sucesso!')
+
+                    else:
+                        usuario.senha = make_password(usuario.senha)  # Cria a senha para usuario
+                        usuario.register()  # Registrar o usuario no banco
+                        messages.success(request, 'Usuário alterado com sucesso!')
+                        if int(request.session['usuario']) == pk:
+                            request.session['usuario_nome'] = nome
+
+                    return redirect('/usuarios')
+                else:
+                    """Se existir dado invalidos retorna para página de erro"""
+                    messages.error(request, error_message)
+                    return redirect('/usuarios')
             else:
-                """Se existir dado invalidos retorna para página de erro"""
-                messages.error(request, error_message)
-                return redirect('/usuarios')
+                return redirect('/')
 
 
 
