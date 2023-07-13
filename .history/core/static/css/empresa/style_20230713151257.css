@@ -1,0 +1,422 @@
+
+
+/*Formulário*/
+
+.container_form {
+
+    width: 900px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    background:#ffffff; 
+    box-shadow: 0px 0px 0px 1px #e3e3e3; 
+    border-radius:3px; 
+    padding:1em;
+    margin-bottom: 40px;
+
+}
+
+.container_form h1 {
+    
+    font-family:'open_sansregular';
+    font-size: 2.3em;
+    color: #223e9c;
+    border-bottom: 0px #f0eded solid;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    margin: auto;
+    font-weight: 600;
+    
+
+}
+
+.form_grupo {
+    width: 90%;
+    margin: 0 auto;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.form_grupo .legenda { 
+
+    width: 100%;
+    float: left;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.text-center {
+    margin: 0 auto;
+    background-color: white;
+}
+
+.text-center span {
+    margin: auto;
+}
+
+.text-center a {
+
+    color: #223e9c;
+}
+
+.choose-sistem {
+
+    width: 100%;
+}
+
+.choose-td {
+    padding-left: 20px;
+    padding-top: 20px;
+
+}
+
+.choose-input {
+    padding-left: 20px;
+    padding-top: 13px;
+}
+
+/* SUBMIT */
+
+.submit { 
+    text-align: center;
+    align-items: center;
+    padding-top: 20px;
+
+ }
+
+.submit_btn {
+
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+    padding: 5px 30px;
+    border: none;
+    outline: none;
+    background-color: #223e9c;
+    color: #fff;
+    font-family: inherit;
+    font-size: 25px;
+    font-family:'open_sansregular';
+    border-radius: 6px;
+    margin: auto;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 20px;
+}
+
+.submit_btn:hover {
+
+    background-color: #444444;
+    transform: scale(1.03);
+
+}
+
+.dropdown {
+    display: block;
+    font-size: 16px;
+    font-family: inherit;
+    color: #222222;
+    border-radius: 4px;
+    border: 1px #f2f2f2 solid;
+    background: #fdfdfd;
+    outline: none;
+    padding-left: 10px;
+    width: 40%;
+    padding-top: 20px;
+}
+
+.form_new_input {
+    display: none;
+}
+
+.radio_label,
+.check_label {
+
+    float: left;
+    width: 100%;
+    padding-left: 30px;
+    cursor: pointer;
+    margin-bottom: 8px;
+
+}
+
+.input-qtd {
+    width: 83px;
+    padding-top: 10px;
+}
+
+
+.radio_new_btn {
+
+    position: absolute;
+    left: 0;
+    transform: translateY(3px);
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    border: 0.2em solid #4c4c4c;
+
+}
+
+.radio_new_btn::after {
+
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #6fcffb;
+    visibility: hidden;
+
+}
+
+.check_new_btn {
+
+    position: absolute;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    border: 0.2em solid #4c4c4c;
+
+}
+
+.check_new_btn::after {
+
+    content: "";
+    height: 8px;
+    width: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #6fcffb;
+    visibility: hidden;
+
+}
+
+.form_new_input:checked ~ .radio_label .radio_new_btn::after,
+.form_new_input:checked ~ .check_label .check_new_btn::after {
+ 
+    visibility: visible;
+}
+
+.form_new_input:checked ~ .radio_label,
+.form_new_input:checked ~ .check_label {
+    color: #6fcffb;
+}
+
+
+.form_grupo {
+
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+
+}
+
+.form_input {
+
+    font-size: 16px;
+    font-family: inherit;
+    padding: 8px 15px;
+    border-radius: 4px;
+    border: 1px #f2f2f2 solid;
+    background: #fdfdfd;
+    outline: none;
+    width: 100%;
+    transition: all 0.3s;
+
+}
+
+.form_message,
+.form_message .message_input {
+
+    width: 100%;
+
+
+}
+
+.form_message_label {
+
+    width: 100%;
+    float: left;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    
+}
+
+/*Formulário*/
+
+/*FOOTER*/
+.main_footer          { background-color:#353535; color:#fff; font-size:0.875em; }
+.main_footer .content { padding:3em 0em; }
+
+.main_footer_copy       { background-color:#262626; width:100%; float:left; text-align:center; padding:1.5em 0em; }
+.main_footer_copy p     { font-family:'open_sanslight'; font-size:1em; color:#e1e0e0; height:20px; }
+.main_footer_copy .m-b-footer   { margin-bottom:0.5em; }
+.main_footer_copy .by   { font-size:0.96em; }
+.main_footer_copy .by i { font-size:0.96em; margin-right:3px; color:#e82626; }
+
+
+/*Começa o Responsivo*/
+
+/*480PX BREAKPOINT*/
+/*480 dividido por 16 = 30em*/
+@media (min-width:30em){
+
+.boxBannerTopo { padding:1em 0; }
+
+}
+
+/*600PX BREAKPOINT*/
+/*600 dividido por 16 = 37,5em*/
+@media (min-width:37em){
+
+
+} 
+
+/*768PX BREAKPOINT*/
+/*768 dividido por 16 = 48em*/
+@media (min-width:48em){
+
+
+} 
+
+/*960PX BREAKPOINT*/
+/*960 dividido por 16 = 60em*/
+@media (min-width:60em){
+
+ .section-seu-codigo          { padding:20px 0px; }
+ .section-seu-codigo .content { width:80%; padding:1em 0; margin:0 10%; }
+
+}
+
+/*1280PX BREAKPOINT*/
+/*1280 dividido por 16 = 80em*/
+@media (min-width:80em){
+
+ 
+}
+
+/*1366PX BREAKPOINT*/
+/*1366 dividido por 16 = 85,375em*/
+@media (min-width:85em){
+
+ .content  { width:80%; margin:0 10%; }
+
+}
+
+/*1600PX BREAKPOINT*/
+/*1600 dividido por 16 = 100em*/
+@media (min-width:100em){
+
+
+}
+/*Fecha o Responsivo*/
+
+.margin_bottom{
+    margin-bottom: 10vw;
+}
+
+/*Filtrar empresa*/
+
+.filtrar{
+
+}
+
+.filtrar label {
+    float: left;
+    margin-left: 20px;
+    font-weight: 700;
+    padding-top: 10px;
+}
+
+.filtrar h4 {
+    padding-top: 13px;
+}
+
+.filtrar select {
+    float: left;
+    margin-left: 15px;
+    height: 40px;
+    width: 100px;
+    padding-bottom: 0;
+    padding-left: 5px;
+    padding-top: 3px;
+    padding-right: 0px;
+}
+
+.notfind{
+    margin-top: 50px;
+    margin-bottom: 10vw;
+    text-align: center;
+}
+
+
+/*Treinamento*/
+.date{
+    width: 150px;
+    border-width: 0;
+    color: #737373;
+}
+
+.search-trei{
+    padding-right: 30px;
+    width: 100px;
+    padding-top: 4px;
+}
+
+@media (max-width: 991px) {
+    .form_input{
+      font-size: 1.6vw;
+    }
+
+    .choose-input input {
+        width: 2.6vw;;
+    }
+
+    .input-qtd {
+        width: 81px;
+      }
+
+      .dropdown {
+        padding-top: 7px;
+        font-size: 1.6vw;
+
+      }
+
+      .submit_btn {
+        font-size: 1.6vw;
+      }
+
+      .filtrar select {
+        margin-left: 2vw;
+        height: 3vw;
+        width: 20vw;
+        margin-top: 1px;
+        padding-bottom: 0;
+        padding-left: 5px;
+        padding-top: 0px;
+        padding-right: 0px;
+      }
+}
+
+@media (max-width: 500px) {
+    .filtrar select {
+
+        margin-top: 8px;
+
+      }
+    }
+
+@media (max-width: 300px) {
+        .filtrar select {
+    
+            margin-top: 12px;
+            margin-bottom: 10px;
+
+          }
+        }

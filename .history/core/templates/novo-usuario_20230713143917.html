@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load bootstrap4 %}
+
+
+
+
+<br>
+{% bootstrap_messages %}
+<br>
+<div class="content-wrapper ">
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+    <h1>Novo usuário</h1>
+    <form class="form" action="#" method="post" >
+        {% csrf_token %}
+        <div class="form_grupo">
+            <label for="nome" class="form_label">Nome</label>
+            <input type="text" name="nome" class="form_input" id="nome" placeholder="Nome" autocomplete="off" minlength="3" maxlength="50" required data-error="Porfavor coloque um nome válido">
+        </div>
+        <div class="form_grupo">
+            <label for="user" class="form_label">Usuário</label>
+            <input type="text" name="user" class="form_input" onblur="validarInput()" id="user" placeholder="Usuário" autocomplete="off" maxlength="50" required >
+        </div>
+        <div class="form_grupo">
+            <label for="senha" class="form_label">Senha</label>
+            <input type="password" name="senha" class="form_input" id="senha" placeholder="Senha" required autocomplete="off" minlength="6" maxlength="100" data-error="insira a senha corretamente">
+        </div>
+        <div class="form_grupo">
+            <label for="senha" class="form_label">Confirmar senha</label>
+            <input type="password" name="confirmar_senha" class="form_input" id="confirmar_senha" placeholder="Confirmar senha" required autocomplete="off" minlength="6" maxlength="100" data-error="insira a senha corretamente">
+        </div>
+        <div class="form_grupo">
+            <br>
+            <label for="estadocivil" class="text">Permissão</label>
+            <select name="permissao" class="dropdown" required id="permissao">
+                <option selected disabled class="form_select_option" value="">Selecione</option>
+                {% for perm in permissao %}
+                <option value="{{ perm.id }}" class="form_select_option">{{ perm.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <br><br><br>
+            
+            <div class="submit">
+              <input type="hidden" name="acao" value="enviar">
+              <button type="submit" name="Submit" class="submit_btn" >Salvar</button>
+            
+            </div>
+    </form>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+{% include 'footer.html' %}
+
+{% endblock %}

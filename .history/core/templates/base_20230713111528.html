@@ -1,0 +1,242 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Contatos Ideal</title>
+  <!-- base:css -->
+  <link rel="icon" type="image/png" href="{% static 'images/ideal.ico' %}"/>
+  <link rel="stylesheet" href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.base.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard/onclick.css' %}">
+
+  <!-- Cadastro-empresa:css-->
+  <link rel="stylesheet" type="text/css" href="{% static 'css/empresa/reset.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/empresa/style.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/empresa/list.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/empresa/fonts-icones.css' %}">
+
+
+</head>
+<body>
+  <div class="container-scroller d-flex">
+    <!-- partial:./partials/_sidebar.html -->
+    <nav class="sidebar sidebar-offcanvas" id="sidebar">
+      <ul class="nav">
+        <li class="nav-item sidebar-category">
+          <p>MENU</p>
+          <span></span>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'index' %}">
+            <i class="mdi mdi-view-quilt menu-icon"></i>
+            <span class="menu-title">Home</span>
+            <div class="badge badge-info badge-pill">{{request.session.qtd_treinamentos}}</div>
+          </a>
+        </li>
+        <li class="nav-item sidebar-category">
+          <p>Empresas</p>
+          <span></span>
+        </li>
+        {% if autorizacao.cadastrar_empresa %}
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'cadastrar-empresa' %}">
+              <i class="mdi mdi-city menu-icon"></i>
+              <span class="menu-title">Cadastrar</span>
+            </a>
+          </li>
+          {% endif %}
+          {% if autorizacao.visualizar_empresa %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'listar-empresa' %}">
+              <i class="mdi mdi-view-headline menu-icon"></i>
+              <span class="menu-title">Listar</span>
+            </a>
+          </li>
+          {% endif %}
+        <li class="nav-item sidebar-category">
+            <p>Treinamento</p>
+            <span></span>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+            <i class="mdi mdi-clipboard-text menu-icon"></i>
+              <span class="menu-title">Treinamentos</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="auth">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{% url 'treinamentos-abertos' %}"> Abertos </a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'treinamentos-finalizados' %}"> Finalizados </a></li>
+              </ul>
+            </div>
+          </li>
+          {% if not request.session.usuario_permissao == request.session.user %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'agendar-treinamento' %}">
+              <i class="mdi mdi-clipboard-outline menu-icon"></i>
+              <span class="menu-title">Agendar</span>
+            </a>
+          </li>
+          {% endif %}
+          {% if autorizacao.editar_usuario %}
+        <li class="nav-item sidebar-category">
+          <p>Usuários</p>
+          <span></span>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'usuarios' %}">
+              <i class="mdi mdi-account-outline menu-icon"></i>
+              <span class="menu-title">Editar</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'novo-usuario' %}">
+              <i class="mdi mdi-account-plus menu-icon"></i>
+              <span class="menu-title">Novo</span>
+            </a>
+          </li>
+          {% endif %}
+      </ul>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <div id="blockm">
+      <div class="pos-f-t">
+        <header>
+          <nav>
+            <ul class="nav-list">
+              <div class="mobile-menu-ex">
+              </div>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'index' %}">
+                  <i class="mdi mdi-view-quilt menu-icon"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+              </li>
+              <li class="nav-item sidebar-category borda">
+                <p>Empresas</p>
+                <span></span>
+              </li>
+              {% if not request.session.usuario_permissao == request.session.user %}
+      
+              <li class="nav-item ">
+                  <a class="nav-link" href="{% url 'cadastrar-empresa' %}">
+                    <i class="mdi mdi-city menu-icon"></i>
+                    <span class="menu-title">Cadastrar</span>
+                  </a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'listar-empresa' %}">
+                    <i class="mdi mdi-view-headline menu-icon"></i>
+                    <span class="menu-title">Listar</span>
+                  </a>
+                </li>
+              <li class="nav-item sidebar-category borda">
+                  <p>Treinamento</p>
+                  <span></span>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+                  <i class="mdi mdi-clipboard-text menu-icon"></i>
+                    <span class="menu-title">Treinamentos</span>
+                    <i class="menu-arrow"></i>
+                  </a>
+                  <div class="collapse" id="auth">
+                    <ul class="nav flex-column sub-menu">
+                      <li class="nav-item"> <a class="nav-link" href="{% url 'treinamentos-abertos' %}"> Abertos </a></li>
+                      <li class="nav-item"> <a class="nav-link" href="{% url 'treinamentos-finalizados' %}"> Finalizados </a></li>
+                    </ul>
+                  </div>
+                </li>
+                {% if not request.session.usuario_permissao == request.session.user %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'agendar-treinamento' %}">
+                    <i class="mdi mdi-clipboard-outline menu-icon"></i>
+                    <span class="menu-title">Agendar</span>
+                  </a>
+                </li>
+                {% endif %}
+                {% if request.session.usuario_permissao ==  request.session.adm %}
+              <li class="nav-item sidebar-category borda">
+                <p>Usuários</p>
+                <span></span>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="{% url 'usuarios' %}">
+                    <i class="mdi mdi-account-outline menu-icon"></i>
+                    <span class="menu-title">Editar</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'novo-usuario' %}">
+                    <i class="mdi mdi-account-plus menu-icon"></i>
+                    <span class="menu-title">Novo</span>
+                  </a>
+                </li>
+                {% endif %}
+            </ul>
+          </nav>
+        </header>
+      </div>
+      <div class="menu-icone">
+          <div class="mobile-menu">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+          </div>
+        </div>
+      </div>
+      <!-- partial:./partials/_navbar.html -->
+      <nav class="navbar col-lg-12 col-12 px-0 py-0 py-lg-4 d-flex flex-row">
+        <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+          <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+            <span class="mdi mdi-menu"></span>
+          </button>
+          <div class="navbar-brand-wrapper">
+            <a class="navbar-brand brand-logo" href="{% url 'index' %}"><img style="width: 8vw; height: 8vw;" src="{% static 'images/idealc.png' %}" alt="logo"/></a>
+            <a class="navbar-brand brand-logo-mini" href="{% url 'index' %}"><img src="{% static 'images/dashboard/logo-mini.svg' %}" alt="logo"/></a>
+          </div>
+          <h4 class="font-weight-bold mb-0 d-none d-md-block mt-1">Ideal Relógios</h4>
+          <ul class="navbar-nav navbar-nav-right hour">
+            <li class="nav-item">
+              <h4 class="mb-0 font-weight-bold d-none d-xl-block">{{request.session.data}}</h4>
+            </li>
+          </ul>
+
+        </div>
+        <div class="pesquisa-login">
+            <div class="pesq">
+              <form class="search-container" action="{% url 'pesquisar-empresa' %}" method="get" id="search-icon">
+                <input type="search" name="search" id="search-bar" placeholder="Busca">
+                <button id="tim">
+                </button>
+              </form>
+            </div>
+              <div class="log-exi">
+                <img src="{% static 'images/dashboard/faces/face5.png' %}" alt="profile"/>
+                <div class="dropdown2">
+                  <a class="dropbtn2" onclick="myFunction()">{{request.session.usuario_nome}}</a>
+                  <div class="dropdown-content2" id="myDropdown">
+                    <a href="{% url 'editar-usuario' request.session.usuario %}" class="dropdown-item">
+                      <i class="mdi mdi-settings text-primary"></i>
+                      Configurações
+                    </a>
+                    <a class="dropdown-item" href="{% url 'logout' %}" >
+                      <i class="mdi mdi-logout text-primary"></i>
+                      Sair
+                    </a>
+                  </div>
+                </div>
+            </div>
+        </div>
+      </nav>
+      {% block content %}
+      {% endblock %}
