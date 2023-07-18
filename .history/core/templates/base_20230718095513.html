@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Contatos Ideal</title>
   <!-- base:css -->
-  <link rel="icon" type="image/png" href="/media/{{empregador.icone_do_site_icon}}"/>
+  <link rel="icon" type="image/png" href="{% static 'images/ideal.ico' %}"/>
   <link rel="stylesheet" href="{% static 'vendors/mdi/css/materialdesignicons.min.css' %}">
   <link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.base.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
@@ -207,7 +207,7 @@
             <span class="mdi mdi-menu"></span>
           </button>
           <div class="navbar-brand-wrapper">
-            <a class="navbar-brand brand-logo" href="{% url 'index' %}"><img style="width: 6vw; height: 6vw; border-radius: 50%;" src="/media/{{empregador.imagem_empresa}}" alt="logo"/></a>
+            <a class="navbar-brand brand-logo" href="{% url 'index' %}"><img style="width: 8vw; height: 8vw; border-radius: 50%;" src="/media/{{empregador.imagem_empresa}}" alt="logo"/></a>
           </div>
           <h4 class="font-weight-bold mb-0 d-none d-md-block mt-1">{{empregador.nome_fantasia}}</h4>
           <ul class="navbar-nav navbar-nav-right hour">

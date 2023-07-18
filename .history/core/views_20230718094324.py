@@ -58,12 +58,12 @@ class IndexView(TemplateView):
             empregador_item = vericarVazio(empregador)
 
             context = {
-                'empregador': empregador_item,
                 'treinamentos': treinamentos,
                 'empresas': empresa,
                 'trein_cont': trei_cont,
                 'paginator': paginator,
                 'autorizacao': autorizacao,
+                'empregador': empregador_item,
             }
 
 

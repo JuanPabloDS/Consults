@@ -17,14 +17,7 @@ def get_file_path(_instance, filename):
 
 class Empregador(Base):
     nome_fantasia = models.CharField(max_length=150)
-    imagem_empresa = StdImageField('Imagem da empresa',upload_to=get_file_path, help_text='Imagem usada como icone da empresa')
-    icone_do_site_icon = StdImageField('icone da empresa',upload_to=get_file_path, help_text='Icone que aparece no navegador ao visitar o site. Formato precisa ser ".icon"')
-
-    class Meta:
-        verbose_name = 'Empregador'
-        verbose_name_plural = 'Empregador'
+    imagem_empresa = StdImageField('icon',upload_to=get_file_path, help_text='Imagem usada como icone da empresa')
+    icone_do_site_icon = StdImageField('icon',upload_to=get_file_path, help_text='Icone que aparece no navegador ao visitar o site. Formato precisa ser ".icon"')
 
 
-    def __str__(self) -> str:
-        """Retorna o str"""
-        return f'{self.nome_fantasia}'

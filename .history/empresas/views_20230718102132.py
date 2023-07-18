@@ -10,8 +10,6 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db.models import Q
 from datetime import date
 from .forms import UploadCSVForm
-import csv
-
 
 
 def upload_csv(request):
@@ -19,27 +17,11 @@ def upload_csv(request):
         form = UploadCSVForm(request.POST, request.FILES)
         if form.is_valid():
             # Processar o arquivo CSV aqui
-            return redirect('process_csv')
+            print(form)
     else:
         form = UploadCSVForm()
 
     return render(request, 'upload_csv.html', {'form': form})
-
-def process_csv(request):
-    if request.method == 'POST':
-        csv_file = request.FILES['csv_file']
-        decoded_file = csv_file.read().decode('utf-8')
-        csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
-        next(csv_data)  # Ignorar cabeçalho do CSV
-
-        empresas = []
-        for row in csv_data:
-            empresa = Empresas(razao=row[0], cnpj=row[1], fantasia=row[2], nome_adicional=row[3], email=row[4], observacoes=row[5])
-            empresas.append(empresa)
-
-        Empresas.objects.bulk_create(empresas)  # Cadastrar vários elementos de uma vez
-        messages.success(request, 'Empresa(s) inportada(s) com sucesso!')
-    return render(request, 'index.html')
 
 
 

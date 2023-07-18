@@ -20,12 +20,11 @@
             <div class="filtrar" style="float: left;">
             <h4 style="float: left;" class="card-title">Filtrar:</h4>
             <h4 style="float: left; margin-left:3vw;" class="card-title">Sistema</h4>
-            <h1>Upload de Arquivo CSV</h1>
-              <form method="post" enctype="multipart/form-data">
-                  {% csrf_token %}
-                  <input type="file" name="csv_file" accept=".csv">
-                  <button type="submit">Enviar</button>
-              </form>
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <button type="submit">Upload</button>
+            </form>
           
 
               <select name="unidade" id="unidade" class="dropdown" required onChange="AbrirSecao(this.value)">

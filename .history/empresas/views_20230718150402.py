@@ -38,8 +38,8 @@ def process_csv(request):
             empresas.append(empresa)
 
         Empresas.objects.bulk_create(empresas)  # Cadastrar vários elementos de uma vez
-        messages.success(request, 'Empresa(s) inportada(s) com sucesso!')
-    return render(request, 'index.html')
+
+    return render(request, 'process_csv.html')
 
 
 
