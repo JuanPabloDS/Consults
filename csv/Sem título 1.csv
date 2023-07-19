@@ -1,2 +1,3 @@
-Empresa,cnpj,fantasia,nome adicional,e-mail,observação
-Gpeto,63.965.826/0001-05,GP,asd,asd@gmail.com,asdasd
+Empresa,cnpj,fantasia,nome adicional,e-mail,observação,sistema,quantidade,contrato,suporte
+Gpeto,63.965.826/0001-05,Gpd,asd,asd@gmail.com,asdasd,Operador,15,Mensal,Sim
+Gpeteco,60.680.358/0001-34,Gpd,asd,asd@gmail.com,asdasd,Operador,15,Anual,Sim

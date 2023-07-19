@@ -120,37 +120,24 @@ class ListarEmView(TemplateView):
             csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
             next(csv_data)  # Ignorar cabeçalho do CSV
 
-            count = 1
+            empresas = []
+            count = 0
             for row in csv_data:
                 empresa = Empresas(razao=row[0], cnpj=row[1], fantasia=row[2], nome_adicional=row[3], email=row[4], observacoes=row[5])
-                count = count + 1
+                empresas.validarEmpresa(empresa)
+                cont = cont + 1
                 error_message = Empresas.validarEmpresa(empresa)
-                sistema = Sistemas.objects.exists(nome=row[6]),
-                print(sistema)
 
-                """if error_message:
-                    messages.error(request, f'Erro na linha {count}: {error_message}')
+                if error_message:
+                    messages.error(request, f'Erro na linha {cont}: {error_message}')
+                    return redirect('/listar-empresa')
 
-                error_message = Empresas.validarSistemaQtd(row[6], row[7], row[8], row[9])"""
-
-
-                return redirect('/listar-empresa')
-
-            """for row in csv_data:
-                empresa = Empresas(razao=row[0], cnpj=row[1], fantasia=row[2], nome_adicional=row[3], email=row[4], observacoes=row[5])
-                Empresas.save(empresa)  # Cadastrar vários elementos de uma vez
-                sistema_qtd_funcionarios = SistemaQtdFuncionarios(empresa = Empresas.objects.get(id=(empresa.id)),
-                                                                    sistema = Sistemas.objects.exists(nome=row[6]),
-                                                                    quantidade = row[7],
-                                                                    contrato = row[8],
-                                                                    suporte = row[9]
-                                                                    )
-"""
+            Empresas.save(empresa)  # Cadastrar vários elementos de uma vez
             messages.success(request, 'Empresa(s) importada(s) com sucesso!')
-            return redirect('/listar-empresa')
+            return redirect('/')
 
         messages.error(request, 'Erro ao importar o arquivo CSV')
-        return redirect('/listar-empresa')
+        return redirect('/')
 
 
 
