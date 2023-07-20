@@ -9,10 +9,10 @@ from usuarios.models import Permissao
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db.models import Q
 from datetime import date
+
 import csv
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-import chardet
 
 
 def upload_csv(request):
@@ -38,22 +38,7 @@ def upload_csv(request):
 
 
 
-def is_csv_file(file):
-        try:
-            # Detectar o encoding do arquivo
-            rawdata = file.read()
-            result = chardet.detect(rawdata)
-            encoding = result['encoding']
 
-            # Decodificar o arquivo usando o encoding detectado
-            decoded_file = rawdata.decode(encoding)
-
-            # Processar o arquivo como CSV
-            csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
-            next(csv_data)  # Ignorar cabeçalho do CSV
-            return True
-        except (csv.Error, UnicodeDecodeError):
-            return False
 
 class ListarEmView(TemplateView):
 
@@ -128,60 +113,66 @@ class ListarEmView(TemplateView):
             else:
                 return redirect('/')
 
-
     def post(self, request):
         if request.method == 'POST' and request.FILES.get('csv_file'):
+            try:
+                csv_file = request.FILES['csv_file']
+                with open('asd', newline='') as csvfile:
+                    # Tenta ler o arquivo como um arquivo CSV
+                    csv.reader(csvfile)
+                    # Se não houver exceções, o arquivo é um arquivo CSV válido
+            except csv.Error:
+                # Se ocorrer um erro durante a leitura, o arquivo não é um arquivo CSV válido
+                print('sad')
             csv_file = request.FILES['csv_file']
+            decoded_file = csv_file.read().decode('utf-8')
+            csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
+            next(csv_data)  # Ignorar cabeçalho do CSV
 
-            if is_csv_file(csv_file):
-                decoded_file = csv_file.read().decode('utf-8')
-                csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
-                next(csv_data)  # Ignorar cabeçalho do CSV
+            count = 1
+            for row in csv_data:
+                empresa = Empresas(razao=row[0], cnpj=row[1], fantasia=row[2], nome_adicional=row[3], email=row[4], observacoes=row[5])
+                count = count + 1
+                error_message = Empresas.validarEmpresa(empresa)
 
-                count = 1
-                for row in csv_data:
-                    empresa = Empresas(razao=row[0], cnpj=row[1], fantasia=row[2], nome_adicional=row[3], email=row[4], observacoes=row[5])
-                    count = count + 1
-                    error_message = Empresas.validarEmpresa(empresa)
 
+                if error_message:
+                    messages.error(request, f'Erro na linha {count}: {error_message}')
+                    return redirect('/listar-empresa')
+
+                if Sistemas.objects.filter(nome=row[6]).exists():
+                    sistema = Sistemas.objects.get(nome=row[6])
+
+                    error_message = Empresas.validarSistemaQtd(sistema.id, row[7], row[8], row[9])
 
                     if error_message:
                         messages.error(request, f'Erro na linha {count}: {error_message}')
                         return redirect('/listar-empresa')
+                else:
+                    messages.error(request, f'Erro na linha {count}: o nome do sistema não é válido')
+                    return redirect('/listar-empresa')
 
-                    if Sistemas.objects.filter(nome=row[6]).exists():
-                        sistema = Sistemas.objects.get(nome=row[6])
+            csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
+            next(csv_data)
+            
+            for row in csv_data:
+                print(row[6])
+                empresa = Empresas(razao=row[0], cnpj=row[1], fantasia=row[2], nome_adicional=row[3], email=row[4], observacoes=row[5])
+                Empresas.save(empresa)  # Cadastrar vários elementos de uma vez
+                sistema = Sistemas.objects.get(nome=row[6])
+                sistema_qtd_funcionarios = SistemaQtdFuncionarios(empresa = Empresas.objects.get(id=(empresa.id)),
+                                                                    sistema = Sistemas.objects.get(id=int(sistema.id)),
+                                                                    quantidade = row[7],
+                                                                    contrato = row[8],
+                                                                    suporte = row[9]
+                                                                    )
+                SistemaQtdFuncionarios.save(sistema_qtd_funcionarios)
 
-                        error_message = Empresas.validarSistemaQtd(sistema.id, row[7], row[8], row[9])
+            messages.success(request, 'Empresa(s) importada(s) com sucesso!')
+            return redirect('/listar-empresa')
 
-                        if error_message:
-                            messages.error(request, f'Erro na linha {count}: {error_message}')
-                            return redirect('/listar-empresa')
-                    else:
-                        messages.error(request, f'Erro na linha {count}: o nome do sistema não é válido')
-                        return redirect('/listar-empresa')
-
-                csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
-                next(csv_data)
-
-                for row in csv_data:
-                    print(row[6])
-                    empresa = Empresas(razao=row[0], cnpj=row[1], fantasia=row[2], nome_adicional=row[3], email=row[4], observacoes=row[5])
-                    Empresas.save(empresa)  # Cadastrar vários elementos de uma vez
-                    sistema = Sistemas.objects.get(nome=row[6])
-                    sistema_qtd_funcionarios = SistemaQtdFuncionarios(empresa = Empresas.objects.get(id=(empresa.id)),
-                                                                        sistema = Sistemas.objects.get(id=int(sistema.id)),
-                                                                        quantidade = row[7],
-                                                                        contrato = row[8],
-                                                                        suporte = row[9]
-                                                                        )
-                    SistemaQtdFuncionarios.save(sistema_qtd_funcionarios)
-
-                messages.success(request, 'Empresa(s) importada(s) com sucesso!')
-                return redirect('/listar-empresa')
-            else:
-                messages.error(request, 'Erro ao importar o arquivo CSV')
-                return redirect('/listar-empresa')
+        messages.error(request, 'Erro ao importar o arquivo CSV')
+        return redirect('/listar-empresa')
 
 
 

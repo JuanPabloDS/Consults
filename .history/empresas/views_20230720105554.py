@@ -12,7 +12,6 @@ from datetime import date
 import csv
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-import chardet
 
 
 def upload_csv(request):

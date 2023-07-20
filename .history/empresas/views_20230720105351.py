@@ -12,7 +12,6 @@ from datetime import date
 import csv
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-import chardet
 
 
 def upload_csv(request):
@@ -40,19 +39,11 @@ def upload_csv(request):
 
 def is_csv_file(file):
         try:
-            # Detectar o encoding do arquivo
-            rawdata = file.read()
-            result = chardet.detect(rawdata)
-            encoding = result['encoding']
-
-            # Decodificar o arquivo usando o encoding detectado
-            decoded_file = rawdata.decode(encoding)
-
-            # Processar o arquivo como CSV
+            decoded_file = file.read().decode('utf-8')
             csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
             next(csv_data)  # Ignorar cabeçalho do CSV
             return True
-        except (csv.Error, UnicodeDecodeError):
+        except csv.Error:
             return False
 
 class ListarEmView(TemplateView):
