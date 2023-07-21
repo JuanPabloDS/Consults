@@ -329,9 +329,6 @@ a {
 
 /*Filtrar empresa*/
 
-.filtrar{
-
-}
 
 .filtrar label {
     float: left;
@@ -426,3 +423,166 @@ a {
 
           }
         }
+
+
+/*Upload CSV */
+
+.card-title-em{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.upload{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: 700px;
+}
+
+.upload h1{
+    color: #001737;
+    margin-right: .6rem;
+    text-transform: capitalize;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 0;
+}
+
+.upload input{
+    padding-left: 0;
+}
+
+.upload-menu{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.upload input {
+    font-size: 16px !important; 
+    background-color: transparent !important;
+    color: #001737;
+}
+
+.button-post{
+    font-size: 16px !important;
+    margin-left: 0 !important;
+}
+
+.card-filter{
+    width: 100%;
+}
+
+.filtrar{
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+}
+
+.card-title-h4{
+    margin-left: 30px;
+}
+
+
+/* Menu 3 */
+
+.menu3 {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .menu-button3 {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 52px;
+    margin-top: -5px;
+  }
+  
+  .menu-items3 {
+    position: absolute;
+    display: none;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    min-width: 150px;
+    right: 0;
+    top: 100%;
+  }
+  
+  .menu-items3 a {
+    display: block;
+    padding: 8px;
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .menu-items3 a:hover {
+    background-color: #ddd;
+  }
+  
+  .show3 {
+    display: block;
+  }
+
+
+  @media (max-width: 991px) {
+    
+    .upload h1{
+
+        font-size: 1.7vw;
+        padding-top: 5px;
+        letter-spacing: 0.5px;
+    }
+    .upload input {
+        font-size: 13px !important;
+        letter-spacing: 0.5px;
+
+      }
+      .button-post {
+        font-size: 13px !important;
+        margin-left: 0 !important;
+        letter-spacing: 0.5px;
+      }
+      .upload {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        width: 400px;
+      }
+    }
+
+    @media (max-width: 646px) {
+    
+        .upload h1{
+    
+            font-size: 1.3vw;
+        }
+        .upload input {
+            font-size: 8px !important;
+    
+          }
+          .button-post {
+            font-size: 8px !important;
+            margin-left: 0 !important;
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+        }
+
+        @media (max-width: 500px) {
+    
+            .upload{
+        
+                display: None;
+            }
+            }
+
+
+.pagination{
+    margin-bottom: 19px;
+}

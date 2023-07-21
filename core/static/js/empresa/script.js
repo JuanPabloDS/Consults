@@ -200,3 +200,22 @@ function validarInput() {
     inputElement.focus();
   }
 }
+
+
+
+// MENU3
+
+function toggleMenu3() {
+  var menuItems = document.getElementById("menuItems3");
+  menuItems.classList.toggle("show3");
+}
+
+// Fechar o menu quando clicar fora dele
+window.onclick = function(event) {
+  var menuItems = document.getElementById("menuItems3");
+  if (!event.target.matches('.menu-button3')) {
+    if (menuItems.classList.contains('show3')) {
+      menuItems.classList.remove('show3');
+    }
+  }
+};

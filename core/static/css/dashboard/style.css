@@ -20820,9 +20820,6 @@ dl li {
 
 @media (max-width: 991px) {
 
- a{
-  color: white;
- }
 
   #blockm{
     display: block;
@@ -21128,6 +21125,7 @@ dl li {
   .card .card-title {
     padding-top: 5px;
     font-size: 1.6vw;
+    letter-spacing: 0.5px;
   }
   .badge {
     line-height: 0;
@@ -21623,3 +21621,4 @@ dl li {
   width: 8vw; 
   height: 8vw;
 }
+

@@ -132,11 +132,29 @@ class ListarEmView(TemplateView):
     def post(self, request):
         if request.method == 'POST' and request.FILES.get('csv_file'):
             csv_file = request.FILES['csv_file']
+            if csv_file.size > 20 * 1024 * 1024:
+                messages.error(request, f'O arquivo ultrapassa o limite permitido de MB')
+                return redirect('/listar-empresa')
+
 
             if is_csv_file(csv_file):
                 decoded_file = csv_file.read().decode('utf-8')
-                csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
-                next(csv_data)  # Ignorar cabeçalho do CSV
+                csv_data = list(csv.reader(decoded_file.splitlines(), delimiter=','))
+                print(csv_data)
+                if len(csv_data) > 1:
+                    # Caso o arquivo possua um cabeçalho, armazene-o em uma variável.
+                    header = csv_data[0]
+                    # E processe o restante dos dados (ignorando o cabeçalho) a partir do índice 1.
+                    for row in csv_data[1:]:
+                        # Processar cada linha de dados aqui.
+                        print(row)
+                else:
+                    # Caso não haja cabeçalho no arquivo, processe todas as linhas como dados.
+                    for row in csv_data:
+                        # Processar cada linha de dados aqui.
+                        print(row)
+
+                #next(csv_data)  # Ignorar cabeçalho do CSV
 
                 count = 1
                 for row in csv_data:
@@ -162,7 +180,7 @@ class ListarEmView(TemplateView):
                         return redirect('/listar-empresa')
 
                 csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
-                next(csv_data)
+                #next(csv_data)
 
                 for row in csv_data:
                     print(row[6])

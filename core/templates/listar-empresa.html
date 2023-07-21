@@ -14,32 +14,47 @@
       <div class="card">
         <div class="card-body">
           <br>
-          <div>
-            <h4 style="" class="card-title">EMPRESAS</h4>
-            <br>
-            <div class="filtrar" style="float: left;">
-            <h4 style="float: left;" class="card-title">Filtrar:</h4>
-            <h4 style="float: left; margin-left:3vw;" class="card-title">Sistema</h4>
-            <h1>Upload de Arquivo CSV</h1>
+          <div class="card-title-em">
+            <div class="card-filter">
+              <h4 class="card-title">EMPRESAS</h4>
+              <br>
+              <div class="filtrar">
+              <h4  class="card-title">Filtrar:</h4>
+              <h4  class="card-title card-title-h4">Sistema</h4>
+                <select name="unidade" id="unidade" class="dropdown" required onChange="AbrirSecao(this.value)">
+                    <option value="{% url 'listar-empresa' %}" class="form_select_option" value="">Todos</option>
+                    {% for sistema in sistemas %}
+                    {% if sistema.id == select %}
+                    <option selected value="?search={{sistema.id}}" class="form_select_option">{{sistema.nome}}</option>
+                    {% else %}
+                    <option value="?search={{sistema.id}}" class="form_select_option">{{sistema.nome}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+              </div>
+            </div>
+            
+            <div class="upload">
+              <div class="upload-menu">
+                <h1>Upload arquivo CSV</h1>
+              <div class="menu3">
+                <button class="menu-button3" onclick="toggleMenu3()">&#8942;</button>
+                <div class="menu-items3" id="menuItems3">
+                  <a href="#">Baixar exmplo do arquivo CSV</a>
+
+                  <!-- Adicione mais itens conforme necessário -->
+                </div>
+              </div>
+              </div>
+              
               <form method="post" enctype="multipart/form-data">
                   {% csrf_token %}
-                  <input type="file" name="csv_file" accept=".csv">
-                  <button type="submit">Enviar</button>
+                  <input type="file" class="submit_btn " name="csv_file" accept=".csv">
+                  <button class="button-post submit_btn" type="submit">Enviar</button>
               </form>
-          
-
-              <select name="unidade" id="unidade" class="dropdown" required onChange="AbrirSecao(this.value)">
-
-                  <option value="{% url 'listar-empresa' %}" class="form_select_option" value="">Todos</option>
-                  {% for sistema in sistemas %}
-                  {% if sistema.id == select %}
-                  <option selected value="?search={{sistema.id}}" class="form_select_option">{{sistema.nome}}</option>
-                  {% else %}
-                  <option value="?search={{sistema.id}}" class="form_select_option">{{sistema.nome}}</option>
-                  {% endif %}
-                  {% endfor %}
-              </select>
+              
             </div>
+            
             <br><br>
           </div>
           <br>
