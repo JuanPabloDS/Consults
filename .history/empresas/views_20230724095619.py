@@ -36,8 +36,9 @@ def upload_csv(request):
 
 
 
-def is_csv_file(file):
 
+
+def is_csv_file(file):
         try:
             # Detectar o encoding do arquivo
             rawdata = file.read()
@@ -48,7 +49,8 @@ def is_csv_file(file):
             decoded_file = rawdata.decode(encoding)
 
             # Processar o arquivo como CSV
-            csv_data = list(csv.reader(decoded_file.splitlines(), delimiter=','))
+            csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
+            next(csv_data)  # Ignorar cabeçalho do CSV
             return True
         except (csv.Error, UnicodeDecodeError):
             return False
@@ -134,23 +136,21 @@ class ListarEmView(TemplateView):
                 messages.error(request, f'O arquivo ultrapassa o limite permitido de MB')
                 return redirect('/listar-empresa')
 
-            if csv_file.name.endswith('.csv'):
-                rawdata = csv_file.read()
-                result = chardet.detect(rawdata)
-                encoding = result['encoding']
-                # Decodificar o arquivo usando o encoding detectado
-                decoded_file = rawdata.decode(encoding)
 
-                # Processar o arquivo como CSV
-                csv_data = list(csv.reader(decoded_file.splitlines(), delimiter=','))
-            else:
-                messages.error(request, 'Erro ao importar o arquivo CSV')
-                return redirect('/listar-empresa')
+            if is_csv_file(csv_file):
+                decoded_file = csv_file.read().decode('utf-8')
+                csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
+                csv_list = []
 
-            count = 1
-            for row in csv_data:
-                print(len(row))
-                if len(row) >= 10:
+                for row in csv_data[1:]:
+                    # Processar cada linha de dados aqui.
+                    csv_list.append(row)
+
+                print(csv_list)
+                #next(csv_data)  # Ignorar cabeçalho do CSV
+
+                count = 1
+                for row in csv_data:
                     empresa = Empresas(razao=row[0], cnpj=row[1], fantasia=row[2], nome_adicional=row[3], email=row[4], observacoes=row[5])
                     count = count + 1
                     error_message = Empresas.validarEmpresa(empresa)
@@ -171,29 +171,28 @@ class ListarEmView(TemplateView):
                     else:
                         messages.error(request, f'Erro na linha {count}: o nome do sistema não é válido')
                         return redirect('/listar-empresa')
-                else:
-                    messages.error(request, 'Erro ao importar o arquivo CSV, o número de colunas não é valido.')
-                    return redirect('/listar-empresa')
 
-            csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
-            #next(csv_data)
+                csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
+                #next(csv_data)
 
-            for row in csv_data:
-                print(row[6])
-                empresa = Empresas(razao=row[0], cnpj=row[1], fantasia=row[2], nome_adicional=row[3], email=row[4], observacoes=row[5])
-                Empresas.save(empresa)  # Cadastrar vários elementos de uma vez
-                sistema = Sistemas.objects.get(nome=row[6])
-                sistema_qtd_funcionarios = SistemaQtdFuncionarios(empresa = Empresas.objects.get(id=(empresa.id)),
-                                                                    sistema = Sistemas.objects.get(id=int(sistema.id)),
-                                                                    quantidade = row[7],
-                                                                    contrato = row[8],
-                                                                    suporte = row[9]
-                                                                    )
-                SistemaQtdFuncionarios.save(sistema_qtd_funcionarios)
+                for row in csv_data:
+                    print(row[6])
+                    empresa = Empresas(razao=row[0], cnpj=row[1], fantasia=row[2], nome_adicional=row[3], email=row[4], observacoes=row[5])
+                    Empresas.save(empresa)  # Cadastrar vários elementos de uma vez
+                    sistema = Sistemas.objects.get(nome=row[6])
+                    sistema_qtd_funcionarios = SistemaQtdFuncionarios(empresa = Empresas.objects.get(id=(empresa.id)),
+                                                                        sistema = Sistemas.objects.get(id=int(sistema.id)),
+                                                                        quantidade = row[7],
+                                                                        contrato = row[8],
+                                                                        suporte = row[9]
+                                                                        )
+                    SistemaQtdFuncionarios.save(sistema_qtd_funcionarios)
 
-            messages.success(request, 'Empresa(s) importada(s) com sucesso!')
-            return redirect('/listar-empresa')
-
+                messages.success(request, 'Empresa(s) importada(s) com sucesso!')
+                return redirect('/listar-empresa')
+            else:
+                messages.error(request, 'Erro ao importar o arquivo CSV')
+                return redirect('/listar-empresa')
 
 
 

@@ -134,45 +134,49 @@ class ListarEmView(TemplateView):
                 messages.error(request, f'O arquivo ultrapassa o limite permitido de MB')
                 return redirect('/listar-empresa')
 
-            if csv_file.name.endswith('.csv'):
+            try:
+                # Detectar o encoding do arquivo
                 rawdata = csv_file.read()
                 result = chardet.detect(rawdata)
                 encoding = result['encoding']
+                print('OIIIIIIIIIIIIIIIIIIII')
                 # Decodificar o arquivo usando o encoding detectado
                 decoded_file = rawdata.decode(encoding)
 
                 # Processar o arquivo como CSV
                 csv_data = list(csv.reader(decoded_file.splitlines(), delimiter=','))
-            else:
+
+            except (csv.Error, UnicodeDecodeError):
                 messages.error(request, 'Erro ao importar o arquivo CSV')
                 return redirect('/listar-empresa')
 
+
+            for row in csv_data[1:]:
+                # Processar cada linha de dados aqui.
+                print(f'{row[0]}-><-')
+
+
             count = 1
             for row in csv_data:
-                print(len(row))
-                if len(row) >= 10:
-                    empresa = Empresas(razao=row[0], cnpj=row[1], fantasia=row[2], nome_adicional=row[3], email=row[4], observacoes=row[5])
-                    count = count + 1
-                    error_message = Empresas.validarEmpresa(empresa)
+                empresa = Empresas(razao=row[0], cnpj=row[1], fantasia=row[2], nome_adicional=row[3], email=row[4], observacoes=row[5])
+                count = count + 1
+                error_message = Empresas.validarEmpresa(empresa)
 
+
+                if error_message:
+                    messages.error(request, f'Erro na linha {count}: {error_message}')
+                    return redirect('/listar-empresa')
+
+                if Sistemas.objects.filter(nome=row[6]).exists():
+                    sistema = Sistemas.objects.get(nome=row[6])
+
+                    error_message = Empresas.validarSistemaQtd(sistema.id, row[7], row[8], row[9])
 
                     if error_message:
                         messages.error(request, f'Erro na linha {count}: {error_message}')
                         return redirect('/listar-empresa')
-
-                    if Sistemas.objects.filter(nome=row[6]).exists():
-                        sistema = Sistemas.objects.get(nome=row[6])
-
-                        error_message = Empresas.validarSistemaQtd(sistema.id, row[7], row[8], row[9])
-
-                        if error_message:
-                            messages.error(request, f'Erro na linha {count}: {error_message}')
-                            return redirect('/listar-empresa')
-                    else:
-                        messages.error(request, f'Erro na linha {count}: o nome do sistema não é válido')
-                        return redirect('/listar-empresa')
                 else:
-                    messages.error(request, 'Erro ao importar o arquivo CSV, o número de colunas não é valido.')
+                    messages.error(request, f'Erro na linha {count}: o nome do sistema não é válido')
                     return redirect('/listar-empresa')
 
             csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')

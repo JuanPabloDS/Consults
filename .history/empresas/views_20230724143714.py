@@ -150,7 +150,7 @@ class ListarEmView(TemplateView):
             count = 1
             for row in csv_data:
                 print(len(row))
-                if len(row) >= 10:
+                if len(row) > 10:
                     empresa = Empresas(razao=row[0], cnpj=row[1], fantasia=row[2], nome_adicional=row[3], email=row[4], observacoes=row[5])
                     count = count + 1
                     error_message = Empresas.validarEmpresa(empresa)
@@ -172,7 +172,7 @@ class ListarEmView(TemplateView):
                         messages.error(request, f'Erro na linha {count}: o nome do sistema não é válido')
                         return redirect('/listar-empresa')
                 else:
-                    messages.error(request, 'Erro ao importar o arquivo CSV, o número de colunas não é valido.')
+                    messages.error(request, 'Erro ao importar o arquivo CSV')
                     return redirect('/listar-empresa')
 
             csv_data = csv.reader(decoded_file.splitlines(), delimiter=',')
