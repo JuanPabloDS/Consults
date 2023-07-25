@@ -27,7 +27,7 @@ urlpatterns = [
     path('', include('treinamentos.urls')),
     path('', include('usuarios.urls')),
     path('', include('login.urls')),
-    path('api/v1/', include(router.urls)),
+    path('api/v2/', include(router.urls)),
     path('auth/', include('rest_framework.urls')) 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

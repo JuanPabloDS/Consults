@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from core_api.urls import router
 
 
 urlpatterns = [
@@ -27,7 +26,5 @@ urlpatterns = [
     path('', include('treinamentos.urls')),
     path('', include('usuarios.urls')),
     path('', include('login.urls')),
-    path('api/v1/', include(router.urls)),
-    path('auth/', include('rest_framework.urls')) 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
