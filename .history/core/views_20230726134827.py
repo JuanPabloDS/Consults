@@ -7,12 +7,13 @@ from treinamentos.models import Treinamentos
 from datetime import date
 from django.core.paginator import Paginator
 from django.db.models import Q
-import requests
+from django.conf import settings
 
 
 class IndexView(TemplateView):
 
     def get(self, request):
+        print(settings.API_URL+'empregador')
 
         paginator = ''
 

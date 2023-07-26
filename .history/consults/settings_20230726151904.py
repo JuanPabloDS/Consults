@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'stdimage',
     'core',
+    'core_api',
     'empresas',
     'usuarios',
     'treinamentos.apps.TreinamentosConfig'
