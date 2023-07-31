@@ -41,10 +41,10 @@
             <select name="permissao" class="dropdown" required id="permissao">
                 <option selected disabled class="form_select_option" value="">Selecione</option>
                 {% for perm in permissao %}
-                {% if usuario.permissao_login.id == perm.id %}
-                <option selected value="{{ perm.id }}" class="form_select_option">{{ perm.nome }}</option>
-                {% else %}
-                <option value="{{ perm.id }}" class="form_select_option">{{ perm.nome }}</option>
+                {if usuario.permissao_login.id == perm.id}
+                <option selected value="{{ usuario.permissao_login.id }}" class="form_select_option">{{ perm.nome }}</option>
+                { else }
+                <option value="{{ usuario.permissao_login.id }}" class="form_select_option">{{ perm.nome }}</option>
                 {% endif %}
                 {% endfor %}
             </select>

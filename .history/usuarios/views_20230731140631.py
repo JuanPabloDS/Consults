@@ -100,17 +100,7 @@ class EditarUsuariosView(TemplateView):
 
                     autorizacao = Permissao.objects.get(nome=request.session['usuario_permissao'])
 
-                    def vericarVazio(classe):
-                        if not len(classe) == 0:
-                            return classe[0]
-                        else:
-                            return
-
-                    empregador = Empregador.objects.all()
-                    empregador_item = vericarVazio(empregador)
-
                     context = {
-                        'empregador': empregador_item,
                         'autorizacao': autorizacao,
                         'usuario':Usuarios.objects.get(id=pk),
                         'permissao':Permissao.objects.all()
@@ -138,14 +128,12 @@ class EditarUsuariosView(TemplateView):
                 senha = request.POST.get('senha')
                 conf_senha = request.POST.get('confirmar_senha')
                 permissao = request.POST.get('permissao')
-                print(permissao)
 
                 if not aut_visualizar_usuario:
                     pk = int(request.session['usuario'])
                     permissao = int(Usuarios.objects.get(id=pk).permissao_login.id)
                 
                 edit_usuario = Usuarios.objects.get(id=pk)
-                print(permissao)
 
                 if senha == '':
                     senha = edit_usuario.senha

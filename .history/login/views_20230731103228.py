@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect, HttpResponseRedirect
 from usuarios.models import Usuarios, Permissao
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib import messages
-from core.models import Empregador
 
 
 
@@ -13,12 +12,6 @@ class LoginView(TemplateView):
 
     def get(self, request):
         """Função get para visualização dos dados enviados pelo backend """
-        
-        def vericarVazio(classe):
-            if not len(classe) == 0:
-                return classe[0]
-            else:
-                return
 
         empregador = Empregador.objects.all()
         empregador_item = vericarVazio(empregador)

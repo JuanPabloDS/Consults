@@ -13,12 +13,6 @@ class LoginView(TemplateView):
 
     def get(self, request):
         """Função get para visualização dos dados enviados pelo backend """
-        
-        def vericarVazio(classe):
-            if not len(classe) == 0:
-                return classe[0]
-            else:
-                return
 
         empregador = Empregador.objects.all()
         empregador_item = vericarVazio(empregador)

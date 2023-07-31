@@ -20803,13 +20803,11 @@ dl li {
   display: block;
 }
 
-.z-index-drop {
-  z-index: 1 !important;
-}
+
 
 .show {
   display: block;
-  z-index: 0;
+  z-index: 1;
 }
 
 #blockm{
